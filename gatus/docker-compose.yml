@@ -3,7 +3,6 @@ services:
     container_name: gatus
     #image: ghcr.io/thackmaster/homelab/gatus:latest
     image: twinproduction/gatus:latest
-    build: .
     restart: unless-stopped
     ports:
       - ${PORT}:8080
@@ -11,5 +10,5 @@ services:
     - SLACK_URL=${SLACK_URL}
     volumes:
       - ${MNT}:/config
-      - ./config.template.yml:/app/config.template.yml:ro
-      - ./entrypoint.sh:/app/entrypoint.sh:ro
+      #- ./config.template.yml:/app/config.template.yml:ro
+      #- ./entrypoint.sh:/app/entrypoint.sh:ro
