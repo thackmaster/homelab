@@ -1,0 +1,10 @@
+services:
+  beszel:
+    image: henrygd/beszel
+    container_name: beszel
+    restart: unless-stopped
+    ports:
+      - ${PORT}:8090
+    network_mode: bridge
+    volumes:
+      - ${MNT}:/beszel_data
