@@ -1,13 +1,13 @@
 name: Build and publish Gatus docker image
 
-#on:
-  #push:
-    #paths:
-      #- 'gatus/**'
-    #branches:
-      #- main
-  #schedule:
-    #- cron: 0 1 1 * * # At 1am on the first of the month
+on:
+  push:
+    paths:
+      - 'gatus/**'
+    branches:
+      - main
+  schedule:
+    - cron: 0 1 1 * * # At 1am on the first of the month
 
 jobs:
    build-and-push:
