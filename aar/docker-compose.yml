@@ -235,8 +235,10 @@ services:
       # Server list updater
       # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
       - UPDATER_PERIOD=24h
-      - BLOCK_MALICIOUS=off
+      - BLOCK_MALICIOUS=on
       - UNBLOCK=${UNBLOCK_URLS}
+      - DOT_PROVIDERS=cloudflare,quad9
+      - DOT_CACHING=off
 
 networks:
   default:
