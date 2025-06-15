@@ -1,0 +1,20 @@
+services:
+  restreamer:
+    container_name: restreamer
+    image: datarhei/restreamer:rpi-latest
+    restart: unless-stopped
+    ports:
+      - 1935:1935
+      - 1936:1936
+      - 8080:8080
+      - 8181:8181
+      - 6000:6000/udp
+    volumes:
+      - restreamer-config:/core/config
+      - restreamer-data:/core/data
+
+volumes:
+  restreamer-config:
+    external: false
+  restreamer-data:
+    external: false
