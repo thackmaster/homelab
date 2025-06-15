@@ -20,4 +20,3 @@ endpoints:
     interval: 1m
     conditions:
       - "[STATUS] == 200"
-    
