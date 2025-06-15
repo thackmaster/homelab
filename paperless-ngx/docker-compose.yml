@@ -1,0 +1,36 @@
+services:
+    paperless-ngx:
+        container_name: paperless-ngx
+        image: ghcr.io/paperless-ngx/paperless-ngx:latest
+        restart: unless-stopped
+        ports:
+            - ${PORT}:8000
+        environment:
+            - PAPERLESS_DBHOST=${DB_HOST}
+            - PAPERLESS_DBNAME=${DB_NAME}
+            - PAPERLESS_DBUSER=${DB_USER}
+            - PAPERLESS_DBPASS=${DB_PASS}
+            - PAPERLESS_REDIS=redis://redis:6379
+            - PAPERLESS_TIME_ZONE=US/Mountain
+            - PAPERLESS_ADMIN_USER=${ADMIN_USER}
+            - PAPERLESS_ADMIN_PASSWORD=${ADMIN_PASS}
+            - PAPERLESS_OCR_LANGUAGE=eng
+            - PAPERLESS_FILENAME_FORMAT={{ created_year }}/{{ title }}
+            #- PAPERLESS_URL=https://paperless.wesleythacker.com
+        networks:
+            - bridge_manual
+            - postgres_network
+            - redis_network
+        volumes:
+            - ${MNT}/data:/usr/src/paperless/data
+            - ${MNT}/media:/usr/src/paperless/media
+            - ${MNT}/export:/usr/src/paperless/export
+            - ${MNT}/consume:/usr/src/paperless/consume
+
+networks:
+    bridge_manual:
+        external: true
+    postgres_network:
+        external: true
+    redis_network:
+        external: true
