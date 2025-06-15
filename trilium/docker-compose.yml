@@ -1,0 +1,14 @@
+name: trilium
+services:
+  trilium:
+    container_name: trilium
+    environment:
+      - USER_UID=${UID}
+      - USER_GID=${GID}
+    image: triliumnext/notes:latest
+    ports:
+      - 34080:8080
+    restart: unless-stopped
+    volumes:
+      - ${MNT}:/home/node/trilium-data
+    network_mode: bridge
