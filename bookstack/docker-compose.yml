@@ -1,0 +1,29 @@
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    container_name: bookstack
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=US/Mountain
+      - APP_URL=${URL}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PASS}
+      - DB_DATABASE=${DB_DATABASE}
+      - QUEUE_CONNECTION= #optional
+    volumes:
+      - ${MNT}:/config
+    ports:
+      - ${PORT}:80
+    restart: unless-stopped
+    networks:
+      - mariadb_network
+      - bridge_manual
+
+networks:
+  mariadb_network:
+    external: true
+  bridge_manual:
+    external: true
