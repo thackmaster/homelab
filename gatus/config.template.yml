@@ -1,0 +1,16 @@
+alerting:
+  slack:
+    webhook-url: "${SLACK_URL}"
+    default-alert:
+      send-on-resolved: true
+      failure-threshold: 3
+      success-threshold: 5
+
+endpoints:
+  - name: Thacker Broadcasting
+    url: https://thackerbroadcasting.com
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: slack
