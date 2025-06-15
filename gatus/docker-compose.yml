@@ -1,7 +1,7 @@
 services:
   gatus:
     container_name: gatus
-    build: .
+    image: ghcr.io/thackmaster/homelab/gatus:latest
     restart: unless-stopped
     ports:
       - ${PORT}:8080
