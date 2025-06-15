@@ -1,0 +1,16 @@
+services:
+  homebox:
+    image: sysadminsmedia/homebox:latest
+    container_name: homebox
+    restart: unless-stopped
+    environment:
+      - HBOX_LOG_FORMAT=text
+      - HBOX_LOG_LEVEL=info
+      - HBOX_MODE=production
+      - HBOX_STORAGE_DATA=/data/
+      - PUID=1026
+      - PGID=100
+    ports:
+      - ${PORT}:7745
+    volumes:
+      - ${MNT}:/data
