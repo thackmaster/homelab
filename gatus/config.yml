@@ -1,0 +1,12 @@
+endpoints:
+  - name: example
+    url: https://example.org
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+      
+  - name: Thacker Broadcasting
+    url: https://thackerbroadcasting.com
+    interval: 1m
+    conditions:
+      - "[STATUS] == 200"
