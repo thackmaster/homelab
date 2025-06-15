@@ -1,0 +1,29 @@
+services:
+  planka:
+    image: ghcr.io/plankanban/planka:2.0.0-rc.2
+    #command: npm run db:upgrade
+    container_name: planka
+    restart: unless-stopped
+    environment:
+      - BASE_URL=${URL}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}
+      - PGID=${GID}
+      - PUID=${UID}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEFAULT_LANGUAGE=en-US
+    ports:
+      - ${PORT}:1337
+    volumes:
+      - ${MNT}/attachments:/app/private/attachments
+      - ${MNT}/background-images:/app/public/background-images
+      - ${MNT}/user-avatars:/app/public/user-avatars
+      - ${MNT}/favicons:/app/public/favicons
+    networks:
+      - bridge_manual
+      - postgres_network
+
+networks:
+  bridge_manual:
+    external: true
+  postgres_network:
+    external: true
