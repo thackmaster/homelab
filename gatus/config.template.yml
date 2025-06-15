@@ -16,7 +16,7 @@ endpoints:
       - type: slack
   
   - name: Test site
-    url: test.wesleythacker.com
+    url: https://test.wesleythacker.com
     interval: 1m
     conditions:
       - "[STATUS] == 200"
