@@ -7,7 +7,7 @@ services:
       - USER_GID=${GID}
     image: triliumnext/notes:latest
     ports:
-      - 34080:8080
+      - ${PORT}:8080
     restart: unless-stopped
     volumes:
       - ${MNT}:/home/node/trilium-data
