@@ -1,0 +1,10 @@
+services:
+  plex:
+    container_name: plex
+    #hostname: plex
+    image: lscr.io/linuxserver/plex:latest
+    restart: unless-stopped
+    volumes:
+      - /home/plex:/config
+      - ${MNT}:/media
+    network_mode: host
