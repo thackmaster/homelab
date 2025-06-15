@@ -7,7 +7,7 @@ services:
     ports:
       - ${PORT}:8080
     environment:
-    - SLACK_URL=${SLACK_URL}
+      - SLACK_URL=${SLACK_URL}
     volumes:
       - ${MNT}:/config
       #- ./config.template.yml:/app/config.template.yml:ro
