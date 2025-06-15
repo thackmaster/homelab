@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  peppermint:
+    container_name: peppermint
+    image: pepperlabs/peppermint:latest
+    ports:
+      - ${WEB_PORT}:3000
+      - ${DB_PORT}:5003
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget --spider $$BASE_URL"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      DB_USERNAME: ${DB_USER}
+      DB_PASSWORD: ${DB_PASS}
+      DB_HOST: ${DB_HOST}
+      SECRET: ${SECRET}
+      API_URL: ${API_URL} #EX. http://ip-address:port
+    networks:
+      - exposed_services
+      - postgres_network
+
+networks:
+  exposed_services:
+    external: true
+  postgres_network:
+    external: true
