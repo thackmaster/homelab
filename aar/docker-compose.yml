@@ -1,0 +1,248 @@
+services:
+  prowlarr: #overview management
+    hostname: prowlarr
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${MNT_CONFIG}/prowlarr:/config:rw
+    ports:
+      - ${PROWLARR_PORT}:9696
+    restart: unless-stopped
+
+  bazarr: #subtitles
+    hostname: bazarr
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${MNT_CONFIG}/bazarr:/config:rw
+      - ${MNT_MOVIES}:/movies:rw #optional
+      - ${MNT_TV}:/tv:rw #optional
+    ports:
+      - ${BAZARR_PORT}:6767
+    restart: unless-stopped
+
+  #lidarr: #music. NOT IN USE
+    #hostname: lidarr
+    #image: lscr.io/linuxserver/lidarr:latest
+    #container_name: lidarr
+    #environment:
+      #- PUID=${UID}
+      #- PGID=${GID}
+      #- TZ=${TZ}
+    #volumes:
+      #- ${MNT_CONFIG}/lidarr:/config:rw
+      #- ${MNT_MUSIC}:/music:rw #optional
+    #ports:
+      #- ${LIDARR_PORT}:8686
+    #restart: unless-stopped
+
+  radarr: #movies
+    hostname: radarr
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${MNT_CONFIG}/radarr:/config:rw
+      - ${MNT_MOVIES}:/movies:rw #optional
+      - ${MNT_DOWNLOADS}:/downloads:rw #optional
+    ports:
+      - ${RADARR_PORT}:7878
+    restart: unless-stopped
+
+  #readarr: #ebooks. NOT IN USE
+    #hostname: readarr
+    #image: lscr.io/linuxserver/readarr:develop
+    #container_name: readarr
+    #environment:
+      #- PUID=${UID}
+      #- PGID=${GID}
+      #- TZ=${TZ}
+    #volumes:
+      #- ${MNT_CONFIG}/readarr:/config:rw
+      #- ${MNT_BOOKS}:/books:rw #optional
+    #ports:
+      #- ${READARR_PORT}:8787
+    #restart: unless-stopped
+
+  sonarr: #tv shows
+    hostname: sonarr
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${MNT_CONFIG}/sonarr:/config:rw
+      - ${MNT_TV}:/tv:rw #optional
+      - ${MNT_CARTOONS}:/cartoons:rw #optional
+      - ${MNT_DOWNLOADS}:/downloads:rw #optional
+      - ${MNT_ANIME}:/anime:rw #optional
+    ports:
+      - ${SONARR_PORT}:8989
+    restart: unless-stopped
+
+  #maintainerr: # NOT IN USE
+    #image: jorenn92/maintainerr:latest
+    #container_name: maintainerr
+    #user: ${UID}:${GID}
+    #volumes:
+      #- ${MNT_CONFIG}/maintainerr:/data
+    #environment:
+      #- TZ=${TZ}
+      #- DEBUG=true # uncomment to enable debug logs
+    #ports:
+      #- ${MAINTAINERR_PORT}:6246
+    #restart: unless-stopped
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=Etc/UTC
+    volumes:
+      - ${MNT_CONFIG}/tautulli/:/config
+    ports:
+      - ${TAUTULLI_PORT}:8181
+    restart: unless-stopped
+
+  overseerr:
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+      #- PORT=5055 #optional
+    ports:
+      - ${OVERSEERR_PORT}:5055
+    volumes:
+      - ${MNT_EXT_CONFIG}/overseerr:/app/config
+    restart: unless-stopped
+
+  # tdarr: #conversions
+    # hostname: tdarr
+    # container_name: tdarr-server
+    # image: ghcr.io/haveagitgat/tdarr:latest
+    # restart: unless-stopped
+    # network_mode: bridge
+    # ports:
+      # - ${TDARR_PORT}:8265 # webUI port
+      # - 8266:8266 # server port
+      # - 8267:8267 # Internal node port
+      # - 8268:8268 # Example extra node port
+    # environment:
+      # - TZ=${TZ}
+      # - PUID=${UID}
+      # - PGID=${GID}
+      # - UMASK_SET=002
+      # - serverIP=
+      # - serverPort=8266
+      # - webUIPort=8265
+      # - internalNode=true
+      # - nodeID=MyInternalNode
+    # volumes:
+      # - ${MNT_CONFIG}/tdarr/app/server:/app/server
+      # - ${MNT_CONFIG}/tdarr/app/configs:/app/configs
+      # - ${MNT_CONFIG}/tdarr/app/logs:/app/logs
+      # - ${MNT_MEDIA}:/media
+      # - ${MNT_CONFIG}/tdarr/temp:/temp
+
+####################
+# DOWNLOAD CLIENTS #
+####################
+  
+  qbittorrent:
+    #hostname: qbittorrent
+    container_name: qbittorrent
+    image: lscr.io/linuxserver/qbittorrent:latest
+    restart: unless-stopped
+    network_mode: "container:gluetun"
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - WEBUI_PORT=${QBITTORRENT_PORT}
+      - TZ=${TZ}
+    volumes:
+      - ${MNT_EXT_CONFIG}/qbittorrent:/config
+      - ${MNT_DOWNLOADS}:/downloads
+    depends_on:
+      gluetun:
+        condition: service_healthy
+
+  sabnzbd:
+    #hostname: sabnzbd
+    container_name: sabnzbd
+    image: lscr.io/linuxserver/sabnzbd:latest
+    restart: unless-stopped
+    network_mode: "container:gluetun"
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${MNT_EXT_CONFIG}/sabnzbd:/config
+      - ${MNT_DOWNLOADS}:/downloads
+    depends_on:
+      gluetun:
+        condition: service_healthy
+
+#######
+# VPN #
+#######
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    # line above must be uncommented to allow external containers to connect.
+    # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks
+      - ${QBITTORRENT_PORT}:${QBITTORRENT_PORT}/tcp #qBittorrent
+      - ${SABNZBD_PORT}:8080/tcp #sabnzbd
+    volumes:
+      - ${MNT_EXT_CONFIG}/gluetun:/gluetun
+    environment:
+      # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      # OpenVPN:
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASS}
+      # Wireguard:
+      #- WIREGUARD_PRIVATE_KEY=
+      #- WIREGUARD_ADDRESSES=10.64.222.21/32
+      # Timezone for accurate log times
+      - TZ=${TZ}
+      - SERVER_COUNTRIES=United States
+      # Server list updater
+      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
+      - UPDATER_PERIOD=24h
+      - BLOCK_MALICIOUS=off
+      - UNBLOCK=${UNBLOCK_URLS}
+
+networks:
+  default:
+    external: false
+    name: aar-network
+    ipam:
+      config:
+        - subnet: 172.20.0.0/27
+          gateway: 172.20.0.1
