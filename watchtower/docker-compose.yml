@@ -1,0 +1,21 @@
+# REQUIRES VARIABLES: HOSTNAME, SCHEDULE
+
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    hostname: ${HOSTNAME}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    network_mode: bridge
+    environment:
+      - TZ=US/Mountain
+      - WATCHTOWER_SCHEDULE=0 0 4 * * * #${SCHEDULE} #0 15 4 * * * cronformat
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_MONITOR_ONLY=true
+      - WATCHTOWER_NOTIFICATIONS=slack
+      - WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL=${SLACK_HOOK_URL}
+      - WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER=${HOSTNAME}
+      - WATCHTOWER_NOTIFICATION_SLACK_CHANNEL=${SLACK_CHANNEL}
+      - WATCHTOWER_LABEL_TAKE_PRECEDENCE=true
