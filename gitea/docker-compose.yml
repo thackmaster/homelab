@@ -1,0 +1,16 @@
+services:
+  gitea:
+    container_name: gitea
+    image: gitea/gitea:latest
+    environment:
+      USER_GID: ${GID}
+      USER_UID: ${UID}
+    network_mode: bridge
+    ports:
+      - ${PORT}:3000
+      - 222:22
+    restart: unless-stopped
+    volumes:
+      - ${MNT}:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
