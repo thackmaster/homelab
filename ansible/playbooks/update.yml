@@ -1,0 +1,13 @@
+- name: Run apt-get update on remote hosts
+  hosts: all
+  become: true
+  tasks:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+    - name: Upgrade
+      apt:
+        upgrade: yes
+    - name: Autoremove
+      apt:
+        autoremove: yes
