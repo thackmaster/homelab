@@ -6,7 +6,8 @@
       command: whoami
       register: whoami_output
     - name: output whoami
-      var: whoami_output
+      debug:
+        var: whoami_output
 
 - name: Run apt-get update on remote hosts
   hosts: all
