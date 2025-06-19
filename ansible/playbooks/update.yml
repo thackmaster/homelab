@@ -1,9 +1,12 @@
 - name: Show whoami
-  command: whoami
-  register: whoami_output
-
-- debug:
-    var: whoami_output
+  hosts: all
+  become: true
+  tasks:
+    - name: whoami command
+      command: whoami
+      register: whoami_output
+    - debug:
+      var: whoami_output
 
 - name: Run apt-get update on remote hosts
   hosts: all
