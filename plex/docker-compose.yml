@@ -4,6 +4,10 @@ services:
     #hostname: plex
     image: lscr.io/linuxserver/plex:latest
     restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     volumes:
       - /home/plex:/config
       - ${MNT}:/media
