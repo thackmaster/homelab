@@ -12,18 +12,35 @@ services:
       - DB_USERNAME=${DB_USER}
       - DB_PASSWORD=${DB_PASS}
       - DB_DATABASE=${DB_DATABASE}
-      - QUEUE_CONNECTION= #optional
+      #- QUEUE_CONNECTION= #optional
     volumes:
       - ${MNT}:/config
     ports:
       - ${PORT}:80
     restart: unless-stopped
     networks:
-      - mariadb_network
+      - bookstackdb_network
       - bridge_manual
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: bookstack-db
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=US/Mountain
+      - MYSQL_ROOT_PASSWORD=${SQL_ROOT}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+    volumes:
+      - ${MNT}/db:/config
+    #ports:
+     #- 3306:3306
+    restart: unless-stopped
+
 
 networks:
-  mariadb_network:
-    external: true
+  bookstackdb_network:
+    external: false
   bridge_manual:
     external: true
