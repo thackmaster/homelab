@@ -18,9 +18,7 @@ services:
     ports:
       - ${PORT}:80
     restart: unless-stopped
-    networks:
-      - bookstackdb_network
-      - bridge_manual
+    
   mariadb:
     image: lscr.io/linuxserver/mariadb:latest
     container_name: bookstack-db
@@ -37,10 +35,3 @@ services:
     #ports:
      #- 3306:3306
     restart: unless-stopped
-
-
-networks:
-  bookstackdb_network:
-    external: false
-  bridge_manual:
-    external: true
