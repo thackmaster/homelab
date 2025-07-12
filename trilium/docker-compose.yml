@@ -5,7 +5,7 @@ services:
     environment:
       - USER_UID=${UID}
       - USER_GID=${GID}
-    image: triliumnext/notes:latest
+    image: triliumnext/trilium:latest
     ports:
       - ${PORT}:8080
     restart: unless-stopped
