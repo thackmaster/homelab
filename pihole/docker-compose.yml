@@ -11,7 +11,8 @@ services:
       - "${PORT_HTTPS}:443/tcp" # HTTPS WEB ACCESS
     environment:
       TZ: 'America/Denver'
-      WEBPASSWORD: '${WEB_PASS}'
+      FTLCONF_webserver_api_password: '${WEB_PASS}'
+      FTLCONF_dns_listeningMode: 'all'
     volumes:
       - '${MNT}/pihole:/etc/pihole'
       #- '${MNT}:/etc/dnsmasq.d'
