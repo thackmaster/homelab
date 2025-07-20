@@ -8,6 +8,7 @@ services:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
+      - VERSION=latest
     volumes:
       - /home/plex:/config
       - ${MNT}:/media
