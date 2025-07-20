@@ -106,7 +106,7 @@ services:
       #- ${MAINTAINERR_PORT}:6246
     #restart: unless-stopped
 
-  tautulli:
+  tautulli: #plex monitor
     image: lscr.io/linuxserver/tautulli:latest
     container_name: tautulli
     environment:
@@ -119,7 +119,7 @@ services:
       - ${TAUTULLI_PORT}:8181
     restart: unless-stopped
 
-  overseerr:
+  overseerr: #requests
     image: sctx/overseerr:latest
     container_name: overseerr
     environment:
