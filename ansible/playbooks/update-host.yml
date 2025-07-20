@@ -2,13 +2,28 @@
   hosts: all
   become: true
   tasks:
-    - name: Update APT package cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-    - name: Upgrade
+    - name: Update Packages
       apt:
         upgrade: yes
-    - name: Autoremove
-      apt:
-        autoremove: yes
+        update_cache: yes
+        cache_valid_time: 3600
+        autoremove: true
+        autoclean: true
+        clean: true
+    - name: Remove hanging Docker images
+      community.docker.docker_prune:
+        containers: false
+        images: true
+        networks: true
+        volumes: false
+        builder_cache: true
+    - name: Check for reboot requirement
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+    - name: Reboot (if necessary)
+      reboot:
+        msg: "Reboot initiated by Ansible"
+        test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
+      when: reboot_required_file.stat.exists
