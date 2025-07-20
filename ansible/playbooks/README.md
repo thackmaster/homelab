@@ -2,7 +2,7 @@ Mostly notes on running these playbooks. Servers are not publically accessible, 
 
 ### For username/password
 ```
-ansible-playbook update.yml -i inventory.yaml -l homelab
+ansible-playbook update.yml -i inventory.yaml -l <group-name>
 ```
 
 ### For SSH keys
@@ -23,7 +23,7 @@ ip-or-hostname:
 
 Then run
 ```
-ansible-playbook update.yml -i inventory.yaml -l <list-name>
+ansible-playbook update.yml -i inventory.yaml -l <group-name>
 ```
 
 You'll still be prompted for an SSH password and BECOME. Just hit enter for both of these.
