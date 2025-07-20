@@ -2,6 +2,7 @@
   hosts: all
   become: true
   tasks:
+  
     - name: Update Packages
       apt:
         upgrade: yes
@@ -10,6 +11,7 @@
         autoremove: true
         autoclean: true
         clean: true
+        
     - name: Remove hanging Docker images
       community.docker.docker_prune:
         containers: false
@@ -17,6 +19,7 @@
         networks: true
         volumes: false
         builder_cache: true
+        
     - name: Check for reboot requirement
       stat:
         path: /var/run/reboot-required
