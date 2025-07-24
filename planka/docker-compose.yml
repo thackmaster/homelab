@@ -37,4 +37,4 @@ services:
 
 networks:
   planka_network:
-    external: true
+    external: false
