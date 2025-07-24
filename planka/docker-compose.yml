@@ -19,11 +19,22 @@ services:
       - ${MNT}/user-avatars:/app/public/user-avatars
       - ${MNT}/favicons:/app/public/favicons
     networks:
-      - bridge_manual
-      - postgres_network
+      - planka_network
+  postgres:
+    container_name: planka-db
+    image: postgres:16-alpine
+    restart: on-failure
+    volumes:
+      - ${MNT}/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d planka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
-  bridge_manual:
-    external: true
-  postgres_network:
+  planka_network:
     external: true
