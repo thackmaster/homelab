@@ -1,12 +1,12 @@
 services:
-    paperless-ngx_broker:
+    broker:
         image: docker.io/library/redis:8
         restart: unless-stopped
         volumes:
             - ${MNT}/broker:/data
         networks:
             - paperless-ngx_network
-    paperless-ngx_db:
+    db:
         image: docker.io/library/postgres:17
         restart: unless-stopped
         volumes:
