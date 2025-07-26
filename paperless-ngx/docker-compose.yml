@@ -35,7 +35,7 @@ services:
             - PAPERLESS_ADMIN_PASSWORD=${ADMIN_PASS}
             - PAPERLESS_OCR_LANGUAGE=eng
             - PAPERLESS_FILENAME_FORMAT={{ created_year }}/{{ title }}
-            #- PAPERLESS_URL=https://paperless.wesleythacker.com
+            - PAPERLESS_URL=https://paperless.wesleythacker.com
         volumes:
             - ${MNT}/data:/usr/src/paperless/data
             - ${MNT}/media:/usr/src/paperless/media
