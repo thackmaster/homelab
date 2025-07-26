@@ -43,7 +43,7 @@ services:
 
 networks:
   bookstack_network:
-    name: bookstack_network:
+    name: bookstack_network
     external: false
     ipam:
       config:
