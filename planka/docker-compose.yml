@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       - BASE_URL=${URL}
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@$planka-db/${DB_NAME}
       - PGID=${GID}
       - PUID=${UID}
       - SECRET_KEY=${SECRET_KEY}
@@ -28,6 +28,8 @@ services:
       - ${MNT}/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_HOST_AUTH_METHOD=trust
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d planka"]
