@@ -22,8 +22,8 @@ services:
         image: ghcr.io/paperless-ngx/paperless-ngx:latest
         restart: unless-stopped
         depends_on:
-            - paperless-ngx_db
-            - paperless-ngx_broker
+            - db
+            - broker
         ports:
             - ${PORT}:8000
         environment:
