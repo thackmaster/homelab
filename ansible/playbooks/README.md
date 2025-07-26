@@ -12,7 +12,7 @@ This particular environment utilizes password more than key files (it's a homela
 ansible-playbook update.yml -i inventory.yaml --key-file=/path/to/key-file
 ```
 
-If you don't want to type in in the command every time, you can place the key file in your `inventory.yaml` file like this:
+If you don't want to type in the command every time, you can place the key file in your `inventory.yaml` file like this:
 
 ```
 ip-or-hostname:
