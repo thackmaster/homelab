@@ -4,6 +4,8 @@ services:
         restart: unless-stopped
         volumes:
             - ${MNT}/broker:/data
+        network:
+            - paperless-ngx_network
     paperless-ngx_db:
         image: docker.io/library/postgres:17
         restart: unless-stopped
@@ -13,6 +15,8 @@ services:
             POSTGRES_DB: ${DB_NAME}
             POSTGRES_USER: ${DB_USER}
             POSTGRES_PASSWORD: ${DB_PASS}
+        network:
+            - paperless-ngx_network
     paperless-ngx:
         container_name: paperless-ngx
         image: ghcr.io/paperless-ngx/paperless-ngx:latest
@@ -41,6 +45,8 @@ services:
             - ${MNT}/media:/usr/src/paperless/media
             - ${MNT}/export:/usr/src/paperless/export
             - ${MNT}/consume:/usr/src/paperless/consume
+        network:
+            - paperless-ngx_network
 
 networks:
     paperless-ngx_network:
