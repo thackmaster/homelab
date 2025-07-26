@@ -19,6 +19,8 @@ services:
     ports:
       - ${PORT}:80
     restart: unless-stopped
+    networks:
+      - bookstack_network
     
   mariadb:
     image: lscr.io/linuxserver/mariadb:latest
@@ -36,3 +38,14 @@ services:
     #ports:
      #- 3306:3306
     restart: unless-stopped
+    networks:
+      - bookstack_network
+
+networks:
+  bookstack_network:
+    name: bookstack_network:
+    external: false
+    ipam:
+      config:
+        - subnet: 172.20.2.0/30
+          gateway: 172.20.2.1
