@@ -20,6 +20,9 @@ services:
       - ${MNT}/favicons:/app/public/favicons
     networks:
       - planka_network
+    depends_on:
+      planka-db:
+        condition: service_healthy
   postgres:
     container_name: planka-db
     image: postgres:16-alpine
