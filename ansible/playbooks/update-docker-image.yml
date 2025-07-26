@@ -1,0 +1,55 @@
+---
+- name: Update specific Docker container on multiple hosts
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars_prompt:
+    - name: "container_name"
+      prompt: "Enter the Docker container name to update"
+      private: no
+
+  tasks:
+    - name: Get details of container
+      community.docker.docker_container_info:
+        name: "{{ container_name }}"
+      register: container_info
+      failed_when: false
+      changed_when: false
+
+    - name: Fail if the container doesn't exist
+      fail:
+        msg: "Container '{{ container_name }}' not found on host {{ inventory_hostname }}"
+      when: container_info is not defined or
+            container_info.container is not defined or
+            container_info.container is none
+
+    - name: Set image name from container info
+      set_fact:
+        image_name: "{{ container_info.container.Config.Image }}"
+
+    - name: Pull the latest image
+      community.docker.docker_image:
+        name: "{{ image_name }}"
+        source: pull
+
+    - name: Stop the existing container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: stopped
+
+    - name: Remove the old container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Recreate the container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        recreate: yes
+        state: started
+        restart_policy: unless-stopped
+        published_ports: "{{ container_info.containers[0].HostConfig.PortBindings | default({}) | dict2items | map(attribute='key') | list }}"
+      vars:
+        ansible_python_interpreter: "/usr/bin/python3"
