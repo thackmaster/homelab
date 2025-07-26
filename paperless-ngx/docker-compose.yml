@@ -36,10 +36,6 @@ services:
             - PAPERLESS_OCR_LANGUAGE=eng
             - PAPERLESS_FILENAME_FORMAT={{ created_year }}/{{ title }}
             #- PAPERLESS_URL=https://paperless.wesleythacker.com
-        networks:
-            - bridge_manual
-            - postgres_network
-            - redis_network
         volumes:
             - ${MNT}/data:/usr/src/paperless/data
             - ${MNT}/media:/usr/src/paperless/media
