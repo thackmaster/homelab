@@ -23,6 +23,8 @@ services:
         ports:
             - ${PORT}:8000
         environment:
+            - USERMAP_UID=${UID}
+            - USERMAP_GID=${GID}
             - PAPERLESS_DBHOST=paperless-ngx_db
             - PAPERLESS_DBNAME=${DB_NAME}
             - PAPERLESS_DBUSER=${DB_USER}
