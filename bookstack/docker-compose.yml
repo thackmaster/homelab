@@ -48,4 +48,4 @@ networks:
     ipam:
       config:
         - subnet: 172.20.2.0/29
-          gateway: 172.20.2.3
+          gateway: 172.20.2.1
