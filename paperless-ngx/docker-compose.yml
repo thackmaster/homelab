@@ -1,16 +1,33 @@
 services:
+    paperless-ngx_broker:
+        image: docker.io/library/redis:8
+        restart: unless-stopped
+        volumes:
+            - ${MNT}/broker:/data
+    paperless-ngx_db:
+        image: docker.io/library/postgres:17
+        restart: unless-stopped
+        volumes:
+            - ${MNT}/db:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
     paperless-ngx:
         container_name: paperless-ngx
         image: ghcr.io/paperless-ngx/paperless-ngx:latest
         restart: unless-stopped
+        depends_on:
+            - paperless-ngx_db
+            - paperless-ngx_broker
         ports:
             - ${PORT}:8000
         environment:
-            - PAPERLESS_DBHOST=${DB_HOST}
+            - PAPERLESS_DBHOST=paperless-ngx_db
             - PAPERLESS_DBNAME=${DB_NAME}
             - PAPERLESS_DBUSER=${DB_USER}
             - PAPERLESS_DBPASS=${DB_PASS}
-            - PAPERLESS_REDIS=redis://redis:6379
+            - PAPERLESS_REDIS=redis://paperless-ngx_broker:6379
             - PAPERLESS_TIME_ZONE=US/Mountain
             - PAPERLESS_ADMIN_USER=${ADMIN_USER}
             - PAPERLESS_ADMIN_PASSWORD=${ADMIN_PASS}
@@ -28,9 +45,9 @@ services:
             - ${MNT}/consume:/usr/src/paperless/consume
 
 networks:
-    bridge_manual:
-        external: true
-    postgres_network:
-        external: true
-    redis_network:
-        external: true
+    paperless-ngx_network:
+        external: false
+        ipam:
+            config:
+                - subnet: 172.20.1.0/29
+                  gateway: 172.20.1.1
