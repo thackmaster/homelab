@@ -21,7 +21,7 @@ services:
     networks:
       - planka_network
     depends_on:
-      planka-db:
+      postgres:
         condition: service_healthy
   postgres:
     container_name: planka-db
