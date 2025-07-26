@@ -50,6 +50,7 @@ services:
 
 networks:
     paperless-ngx_network:
+        name: paperless-ngx_network
         external: false
         ipam:
             config:
