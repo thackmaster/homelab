@@ -44,4 +44,9 @@ services:
 
 networks:
   planka_network:
+    name: planka_network
     external: false
+    ipam:
+      config:
+        - subnet: 172.20.0.0/29
+          gateway: 172.20.0.1
