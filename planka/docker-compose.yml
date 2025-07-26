@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       - BASE_URL=${URL}
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@$planka-db/${DB_NAME}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@planka-db/${DB_NAME}
       - PGID=${GID}
       - PUID=${UID}
       - SECRET_KEY=${SECRET_KEY}
