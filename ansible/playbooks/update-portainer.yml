@@ -2,21 +2,25 @@
   hosts: all
   become: true
   tasks:
+    
     - name: Pull latest image
       docker_image:
         name: portainer/portainer-ce
         source: pull
+    
     - name: Stop existing portainer container
       docker_container:
         name: portainer
         state: stopped
         force_kill: false
       ignore_errors: true
+    
     - name: Remove portainer container
       docker_container:
         name: portainer
         state: absent
       ignore_errors: true
+    
     - name: Create portainer container
       docker_container:
         name: portainer
