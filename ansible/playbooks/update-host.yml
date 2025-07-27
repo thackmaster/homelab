@@ -27,7 +27,7 @@
 
    - name: Prompt for reboot (if necessary)
       pause:
-        prompt: "Press ENTER to reboot {{ inventory_hostname }} now, or Ctrl+C >
+        prompt: "Press ENTER to reboot {{ inventory_hostname }} now, or Ctrl+C to abort."
       when: reboot_required_file.stat.exists
       
     - name: Reboot (if necessary)
