@@ -49,7 +49,7 @@ services:
         image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
         environment:
             POSTGRES_DB: ${DB_NAME}
-            POSTGRES_INITDB_ARGS: --data-checksums
+            POSTGRES_INITDB_ARGS: '--data-checksums'
             POSTGRES_PASSWORD: ${DB_PASS}
             POSTGRES_USER: ${DB_USER}
         networks:
@@ -71,6 +71,8 @@ services:
         restart: unless-stopped
         volumes:
             - ${MNT}/redis:/data
+        healthcheck:
+            test: redis-cli ping || exit 1
         cpu_shares: 90
         deploy:
             resources:
