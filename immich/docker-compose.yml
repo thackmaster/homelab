@@ -1,47 +1,6 @@
 services:
-    database:
-        cpu_shares: 90
-        container_name: immich-postgres
-        hostname: database
-        image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
-        environment:
-            POSTGRES_DB: ${DB_NAME}
-            POSTGRES_INITDB_ARGS: --data-checksums
-            POSTGRES_PASSWORD: ${DB_PASS}
-            POSTGRES_USER: ${DB_USER}
-        networks:
-            - immich
-        restart: unless-stopped
-        volumes:
-            - ${MNT}/postgres:/var/lib/postgresql/data
-        deploy:
-            resources:
-                limits:
-                    memory: "512m"
-    
-    immich-machine-learning:
-        cpu_shares: 90
-        container_name: immich-machine-learning
-        hostname: immich-machine-learning
-        image: ghcr.io/immich-app/immich-machine-learning:release
-        environment:
-            DB_DATABASE_NAME: ${DB_NAME}
-            DB_PASSWORD: ${DB_PASS}
-            DB_USERNAME: ${DB_USER}
-        networks:
-            - immich
-        restart: unless-stopped
-        volumes:
-            - ${MNT}/model-cache:/cache
-        deploy:
-            resources:
-                limits:
-                    memory: "1g"
-    
     immich-server:
-        cpu_shares: 90
         container_name: immich-server
-        hostname: immich-server
         image: ghcr.io/immich-app/immich-server:release
         environment:
             DB_DATABASE_NAME: ${DB_NAME}
@@ -61,21 +20,58 @@ services:
         depends_on:
             - database
             - redis
+        cpu_shares: 90
         deploy:
             resources:
                 limits:
                     memory: "1g"
-    
-    redis:
+
+    immich-machine-learning:
+        container_name: immich-machine-learning
+        image: ghcr.io/immich-app/immich-machine-learning:release
+        environment:
+            DB_DATABASE_NAME: ${DB_NAME}
+            DB_PASSWORD: ${DB_PASS}
+            DB_USERNAME: ${DB_USER}
+        networks:
+            - immich
+        restart: unless-stopped
+        volumes:
+            - ${MNT}/model-cache:/cache
         cpu_shares: 90
+        deploy:
+            resources:
+                limits:
+                    memory: "1g"
+
+    database:
+        container_name: immich-postgres
+        image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
+        environment:
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_INITDB_ARGS: --data-checksums
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_USER: ${DB_USER}
+        networks:
+            - immich
+        restart: unless-stopped
+        volumes:
+            - ${MNT}/postgres:/var/lib/postgresql/data
+        cpu_shares: 90
+        deploy:
+            resources:
+                limits:
+                    memory: "512m"
+
+    redis:
         container_name: immich-redis
-        hostname: redis
         image: docker.io/valkey/valkey:8-bookworm
         networks:
             - immich
         restart: unless-stopped
         volumes:
             - ${MNT}/redis:/data
+        cpu_shares: 90
         deploy:
             resources:
                 limits:
