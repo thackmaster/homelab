@@ -87,5 +87,5 @@ networks:
         external: false
         ipam:
             config:
-                - subnet: 172.20.30.0/28
+                - subnet: 172.20.30.0/29
                   gateway: 172.20.30.1
