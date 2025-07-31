@@ -10,14 +10,10 @@ services:
             POSTGRES_PASSWORD: ${DB_PASS}
             POSTGRES_USER: ${DB_USER}
         networks:
-            immich: null
+            - immich
         restart: unless-stopped
         volumes:
-            - type: bind
-              source: ${MNT}/postgres
-              target: /var/lib/postgresql/data
-              bind:
-                create_host_path: true
+            - ${MNT}/postgres:/var/lib/postgresql/data
         deploy:
             resources:
                 limits:
@@ -33,14 +29,10 @@ services:
             DB_PASSWORD: ${DB_PASS}
             DB_USERNAME: ${DB_USER}
         networks:
-            immich: null
+            - immich
         restart: unless-stopped
         volumes:
-            - type: bind
-              source: ${MNT}/model-cache
-              target: /cache
-              bind:
-                create_host_path: true
+            - ${MNT}/model-cache:/cache
         deploy:
             resources:
                 limits:
@@ -56,41 +48,19 @@ services:
             DB_PASSWORD: ${DB_PASS}
             DB_USERNAME: ${DB_USER}
         networks:
-            immich: null
+            - immich
         ports:
-            - mode: ingress
-              target: 2283
-              published: ${PORT}
-              protocol: tcp
+            - ${PORT}:2283
         restart: unless-stopped
         volumes:
-            - type: bind
-              source: ${MNT_MEDIA}/Photos
-              target: /usr/src/app/upload
-              bind:
-                create_host_path: true
-            - type: bind
-              source: /etc/localtime
-              target: /etc/localtime
-              read_only: true
-              bind:
-                create_host_path: true
-            - type: bind
-              source: ${MNT_MEDIA}/Photos/thumbs
-              target: /usr/src/app/upload/thumbs
-            - type: bind
-              source: ${MNT_MEDIA}/Photos/encoded-video
-              target: /usr/src/app/upload/encoded-video
-            - type: bind
-              source: ${MNT_MEDIA}/Photos/profile
-              target: /usr/src/app/upload/profile
+            - ${MNT_MEDIA}/Photos:/usr/src/app/upload
+            - /etc/localtime:/etc/localtime:ro
+            - ${MNT_MEDIA}/Photos/thumbs:/usr/src/app/upload/thumbs
+            - ${MNT_MEDIA}/Photos/encoded-video:/usr/src/app/upload/encoded-video
+            - ${MNT_MEDIA}/Photos/profile:/usr/src/app/upload/profile
         depends_on:
-            database:
-                condition: service_started
-                required: true
-            redis:
-                condition: service_started
-                required: true
+            - database
+            - redis
         deploy:
             resources:
                 limits:
@@ -102,14 +72,10 @@ services:
         hostname: immich-redis
         image: docker.io/valkey/valkey:8-bookworm
         networks:
-            immich: null
+            - immich
         restart: unless-stopped
         volumes:
-            - type: bind
-              source: ${MNT}/redis
-              target: /data
-              bind:
-                create_host_path: true
+            - ${MNT}/redis:/data
         deploy:
             resources:
                 limits:
