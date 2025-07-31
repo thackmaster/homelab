@@ -3,7 +3,7 @@ services:
         cpu_shares: 90
         container_name: immich-postgres
         hostname: immich-postgres
-        image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
+        image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
         environment:
             POSTGRES_DB: ${DB_NAME}
             POSTGRES_INITDB_ARGS: --data-checksums
@@ -22,11 +22,12 @@ services:
             resources:
                 limits:
                     memory: "512m"
+    
     immich-machine-learning:
         cpu_shares: 90
         container_name: immich-machine-learning
         hostname: immich-machine-learning
-        image: altran1502/immich-machine-learning:release
+        image: ghcr.io/immich-app/immich-machine-learning:release
         environment:
             DB_DATABASE_NAME: ${DB_NAME}
             DB_PASSWORD: ${DB_PASS}
@@ -44,6 +45,7 @@ services:
             resources:
                 limits:
                     memory: "1g"
+    
     immich-server:
         cpu_shares: 90
         container_name: immich-server
@@ -93,11 +95,12 @@ services:
             resources:
                 limits:
                     memory: "1g"
+    
     redis:
         cpu_shares: 90
         container_name: immich-redis
         hostname: immich-redis
-        image: redis:7.4.1-alpine
+        image: docker.io/valkey/valkey:8-bookworm
         networks:
             immich: null
         restart: unless-stopped
@@ -114,4 +117,9 @@ services:
 
 networks:
     immich:
+        name: immich
         external: false
+        ipam:
+            config:
+                - subnet: 172.20.30.0/28
+                  gateway: 172.20.30.1
