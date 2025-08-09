@@ -15,12 +15,12 @@
     - name: Update packages (dnf/yum)
       block:
 
-        - name: Update packages
+        - name: Update packages (dnf/yum)
           yum:
             name: '*'
             state: latest
 
-        - name: Clean up packages
+        - name: Clean up packages (dnf/yum)
           yum:
             autoremove: yes
 
@@ -35,13 +35,13 @@
         builder_cache: true
       when: ansible_distribution in ["Ubuntu", "Debian"]
 
-    - name: Remove hanging Docker artifacts (yum)
+    - name: Remove hanging Docker artifacts (dnf/yum)
       block:
 
-        - name: Remove hanging Docker images
+        - name: Remove hanging Docker images (dnf/yum)
           command: docker image prune -f
 
-        - name: Remove hanging Docker networks
+        - name: Remove hanging Docker networks (dnf/yum)
           command: docker network prune -f
 
       when: ansible_distribution in ["Fedora", "CentOS", "RedHat"]
