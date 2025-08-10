@@ -2,7 +2,7 @@ services:
   plex:
     container_name: plex
     #hostname: plex
-    image: lscr.io/linuxserver/plex:1.42.0
+    image: lscr.io/linuxserver/plex:1.41.9.9961-46083195d-ls276
     restart: unless-stopped
     environment:
       - PUID=${UID}
