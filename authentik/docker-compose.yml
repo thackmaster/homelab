@@ -17,7 +17,7 @@ services:
       POSTGRES_USER: ${PG_USER:-authentik}
       POSTGRES_DB: ${PG_DB:-authentik}
     env_file:
-      - stack.env
+      - .env
   redis:
     container_name: authentik-redis
     image: docker.io/library/redis:alpine
@@ -47,7 +47,7 @@ services:
       - ${MNT}/media:/media
       - ${MNT}/custom-templates:/templates
     env_file:
-      - stack.env
+      - .env
     ports:
       - "${COMPOSE_PORT_HTTP:-9000}:9000"
       - "${COMPOSE_PORT_HTTPS:-9443}:9443"
@@ -81,7 +81,7 @@ services:
       - ${MNT}/certs:/certs
       - ${MNT}/custom-templates:/templates
     env_file:
-      - stack.env
+      - .env
     depends_on:
       postgresql:
         condition: service_healthy
