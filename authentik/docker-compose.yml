@@ -1,4 +1,5 @@
 # Copied from authentik
+# Doesn't deploy via Portainer, `env_file` gets very grumpy about not existing even when providing values in the Portainer GUI.
 services:
   postgresql:
     container_name: authentik-db
