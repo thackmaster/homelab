@@ -1,17 +1,4 @@
 services:
-  prowlarr: #overview management
-    hostname: prowlarr
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TZ}
-    volumes:
-      - ${MNT_CONFIG}/prowlarr:/config:rw
-    ports:
-      - ${PROWLARR_PORT}:9696
-    restart: unless-stopped
 
   bazarr: #subtitles
     hostname: bazarr
@@ -28,22 +15,45 @@ services:
     ports:
       - ${BAZARR_PORT}:6767
     restart: unless-stopped
+  
+  kometa:
+    container_name: kometa
+    image: kometateam/kometa:latest
+    environment:
+      - PUID=1037
+      - PGID=65536
+      - TZ=America/Denver
+      - KOMETA_RUN=${KOMETA_RUN} #run immediately
+    volumes:
+      - ${MNT_EXT_CONFIG}/kometa:/config:rw
 
-  #lidarr: #music. NOT IN USE
-    #hostname: lidarr
-    #image: lscr.io/linuxserver/lidarr:latest
-    #container_name: lidarr
-    #environment:
-      #- PUID=${UID}
-      #- PGID=${GID}
-      #- TZ=${TZ}
-    #volumes:
-      #- ${MNT_CONFIG}/lidarr:/config:rw
-      #- ${MNT_MUSIC}:/music:rw #optional
-    #ports:
-      #- ${LIDARR_PORT}:8686
-    #restart: unless-stopped
-
+  overseerr: #requests
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+      #- PORT=5055 #optional
+    ports:
+      - ${OVERSEERR_PORT}:5055
+    volumes:
+      - ${MNT_EXT_CONFIG}/overseerr:/app/config
+    restart: unless-stopped
+  
+  prowlarr: #overview management
+    hostname: prowlarr
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${MNT_CONFIG}/prowlarr:/config:rw
+    ports:
+      - ${PROWLARR_PORT}:9696
+    restart: unless-stopped
+  
   radarr: #movies
     hostname: radarr
     image: lscr.io/linuxserver/radarr:latest
@@ -59,22 +69,7 @@ services:
     ports:
       - ${RADARR_PORT}:7878
     restart: unless-stopped
-
-  #readarr: #ebooks. NOT IN USE
-    #hostname: readarr
-    #image: lscr.io/linuxserver/readarr:develop
-    #container_name: readarr
-    #environment:
-      #- PUID=${UID}
-      #- PGID=${GID}
-      #- TZ=${TZ}
-    #volumes:
-      #- ${MNT_CONFIG}/readarr:/config:rw
-      #- ${MNT_BOOKS}:/books:rw #optional
-    #ports:
-      #- ${READARR_PORT}:8787
-    #restart: unless-stopped
-
+  
   sonarr: #tv shows
     hostname: sonarr
     image: lscr.io/linuxserver/sonarr:latest
@@ -93,19 +88,6 @@ services:
       - ${SONARR_PORT}:8989
     restart: unless-stopped
 
-  #maintainerr: # NOT IN USE
-    #image: jorenn92/maintainerr:latest
-    #container_name: maintainerr
-    #user: ${UID}:${GID}
-    #volumes:
-      #- ${MNT_CONFIG}/maintainerr:/data
-    #environment:
-      #- TZ=${TZ}
-      #- DEBUG=true # uncomment to enable debug logs
-    #ports:
-      #- ${MAINTAINERR_PORT}:6246
-    #restart: unless-stopped
-
   tautulli: #plex monitor
     image: lscr.io/linuxserver/tautulli:latest
     container_name: tautulli
@@ -118,19 +100,49 @@ services:
     ports:
       - ${TAUTULLI_PORT}:8181
     restart: unless-stopped
+  
+  #lidarr: #music. NOT IN USE
+    #hostname: lidarr
+    #image: lscr.io/linuxserver/lidarr:latest
+    #container_name: lidarr
+    #environment:
+      #- PUID=${UID}
+      #- PGID=${GID}
+      #- TZ=${TZ}
+    #volumes:
+      #- ${MNT_CONFIG}/lidarr:/config:rw
+      #- ${MNT_MUSIC}:/music:rw #optional
+    #ports:
+      #- ${LIDARR_PORT}:8686
+    #restart: unless-stopped
 
-  overseerr: #requests
-    image: sctx/overseerr:latest
-    container_name: overseerr
-    environment:
-      - LOG_LEVEL=debug
-      - TZ=${TZ}
-      #- PORT=5055 #optional
-    ports:
-      - ${OVERSEERR_PORT}:5055
-    volumes:
-      - ${MNT_EXT_CONFIG}/overseerr:/app/config
-    restart: unless-stopped
+  #readarr: #ebooks. NOT IN USE
+    #hostname: readarr
+    #image: lscr.io/linuxserver/readarr:develop
+    #container_name: readarr
+    #environment:
+      #- PUID=${UID}
+      #- PGID=${GID}
+      #- TZ=${TZ}
+    #volumes:
+      #- ${MNT_CONFIG}/readarr:/config:rw
+      #- ${MNT_BOOKS}:/books:rw #optional
+    #ports:
+      #- ${READARR_PORT}:8787
+    #restart: unless-stopped
+
+  #maintainerr: # NOT IN USE
+    #image: jorenn92/maintainerr:latest
+    #container_name: maintainerr
+    #user: ${UID}:${GID}
+    #volumes:
+      #- ${MNT_CONFIG}/maintainerr:/data
+    #environment:
+      #- TZ=${TZ}
+      #- DEBUG=true # uncomment to enable debug logs
+    #ports:
+      #- ${MAINTAINERR_PORT}:6246
+    #restart: unless-stopped
 
   # tdarr: #conversions
     # hostname: tdarr
