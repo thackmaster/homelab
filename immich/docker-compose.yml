@@ -81,7 +81,7 @@ services:
 
 networks:
     immich:
-        name: immich
+        name: immich_network
         external: false
         ipam:
             config:
