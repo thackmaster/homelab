@@ -4,12 +4,18 @@
   become: true
   gather_facts: true
 
+  environment:
+    DOCKER_HOST: "unix:///var/run/docker.sock"
+
   vars_prompt:
     - name: "container_name"
       prompt: "Enter the Docker container name to update"
       private: no
 
   tasks:
+    - name: Test docker connection
+      community.docker.docker_host_info:
+
     - name: Get details of container
       community.docker.docker_container_info:
         name: "{{ container_name }}"
@@ -24,14 +30,84 @@
             container_info.container is not defined or
             container_info.container is none
 
-    - name: Set image name from container info
-      set_fact:
-        image_name: "{{ container_info.container.Config.Image }}"
+    - name: Debugging information
+      block:
+
+        - name: Set restart policy
+          set_fact:
+            restart: "{{ container_info.container.HostConfig.RestartPolicy.Name }}"
+        
+        - name: Show restart policy
+          debug:
+            var: restart
+        
+        - name: Set published ports
+          set_fact:
+            ports: >-
+                    {{ 
+                      container_info.container.HostConfig.PortBindings 
+                      | dict2items 
+                      | map(attribute='key') 
+                      | zip(
+                        container_info.container.HostConfig.PortBindings 
+                        | dict2items 
+                        | map(attribute='value')
+                        | map('first')
+                        | map(attribute='HostPort')
+                      )
+                      | map('join', ':')
+                      | list 
+                    }}
+        
+        - name: Show ports
+          debug:
+            var: ports
+
+        - name: Set named volumes
+          set_fact:
+            named_volumes: >-
+                            {{
+                              container_info.container.Mounts
+                              | selectattr('Type', 'equalto', 'volume')
+                              | map(attribute='Name')
+                              | zip(
+                                container_info.container.Mounts
+                                | selectattr('Type', 'equalto', 'volume')
+                                | map(attribute='Destination')
+                              )
+                              | map('join', ':')
+                              | list
+                            }}
+        
+        - name: Set bind volumes
+          set_fact:
+            bind_mounts: >-
+                          {{
+                            container_info.container.Mounts
+                            | selectattr('Type', 'equalto', 'bind')
+                            | map(attribute='Source')
+                            | zip(
+                              container_info.container.Mounts
+                              | selectattr('Type', 'equalto', 'bind')
+                              | map(attribute='Destination')
+                            )
+                            | map('join', ':')
+                            | list
+                          }}
+        
+        - name: Combine volumes
+          set_fact:
+            combined_volumes: "{{ bind_mounts + named_volumes }}"
+        
+        - name: Show volumes
+          debug:
+            var: combined_volumes
 
     - name: Pull the latest image
       community.docker.docker_image:
-        name: "{{ image_name }}"
+        name: "{{ container_info.container.Config.Image }}"
         source: pull
+        force_source: true
 
     - name: Stop the existing container
       community.docker.docker_container:
@@ -46,10 +122,11 @@
     - name: Recreate the container
       community.docker.docker_container:
         name: "{{ container_name }}"
-        image: "{{ image_name }}"
+        image: "{{ container_info.container.Config.Image }}"
+        restart_policy: "{{ restart }}"
+        published_ports: "{{ ports }}"
+        volumes: "{{ combined_volumes }}"
         recreate: yes
         state: started
-        restart_policy: unless-stopped
-        published_ports: "{{ container_info.containers[0].HostConfig.PortBindings | default({}) | dict2items | map(attribute='key') | list }}"
       vars:
         ansible_python_interpreter: "/usr/bin/python3"
