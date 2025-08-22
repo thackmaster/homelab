@@ -115,6 +115,10 @@
           set_fact:
             container_entrypoint: "{{ container_info.container.Config.Entrypoint | default(omit) }}"
 
+        - name: Show entrypoint
+          debug:
+            var: container_entrypoint
+
     - name: Pull the latest image
       community.docker.docker_image:
         name: "{{ container_info.container.Config.Image }}"
