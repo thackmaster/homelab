@@ -1,0 +1,27 @@
+services:
+    jira:
+        container_name: jira
+        image: atlassian/jira-software:latest
+        ports:
+            - 8080:8080
+        volumes:
+            - jiraVolume:/var/atlassian/application-data/jira
+
+    postgres:
+        hostname: postgres
+        container_name: jira-db
+        image: postgres:17-alpine
+        environment:
+            POSTGRES_PASSWORD: secretpassword
+            POSTGRES_USER: secretjira
+            POSTGRES_DB: jira
+        volumes:
+            - postgres:/var/lib/postgresql/data
+
+volumes:
+    jiraVolume:
+    postgres:
+
+networks:
+    default:
+        name: jira_network
