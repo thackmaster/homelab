@@ -78,7 +78,7 @@
                               | map('join', ':')
                               | list
                             }}
-        
+
         - name: Set bind volumes
           set_fact:
             bind_mounts: >-
@@ -94,14 +94,26 @@
                             | map('join', ':')
                             | list
                           }}
-        
+
         - name: Combine volumes
           set_fact:
             combined_volumes: "{{ bind_mounts + named_volumes }}"
-        
+
         - name: Show volumes
           debug:
             var: combined_volumes
+
+        - name: Set command args
+          set_fact:
+            container_args: "{{ container_info.container.Config.Cmd | default([]) }}"
+
+        - name: Show container args
+          debug:
+            var: container_args
+
+        - name: Set entrypoint
+          set_fact:
+            container_entrypoint: "{{ container_info.container.Config.Entrypoint | default(omit) }}"
 
     - name: Pull the latest image
       community.docker.docker_image:
@@ -126,6 +138,8 @@
         restart_policy: "{{ restart }}"
         published_ports: "{{ ports }}"
         volumes: "{{ combined_volumes }}"
+        command: "{{ container_args }}"
+        entrypoint: "{{ container_entrypoint }}"
         recreate: yes
         state: started
       vars:
