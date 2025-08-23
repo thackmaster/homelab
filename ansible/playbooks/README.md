@@ -2,14 +2,14 @@ Mostly notes on running these playbooks. Servers are not publically accessible, 
 
 ### For username/password
 ```
-ansible-playbook update.yml -i inventory.yaml -l <group-name>
+ansible-playbook update.yml -l <group-name>
 ```
 
 ### For SSH keys
 This particular environment utilizes password more than key files (it's a homelab, come on). However, in the off-chance you utilize keys or have a one-off at a remote location (Oracle, Azure, etc), the command below allows for key files.
 
 ```
-ansible-playbook update.yml -i inventory.yaml --key-file=/path/to/key-file
+ansible-playbook update.yml --key-file=/path/to/key-file
 ```
 
 If you don't want to type in the command every time, you can place the key file in your `inventory.yaml` file like this:
@@ -27,3 +27,7 @@ ansible-playbook update.yml -i inventory.yaml -l <group-name>
 ```
 
 You'll still be prompted for an SSH password and BECOME. Just hit enter for both of these.
+
+### Target specific device in inventory
+```
+anisible-playbook playbook.yml --limit host -kK
