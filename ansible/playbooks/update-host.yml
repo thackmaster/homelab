@@ -1,4 +1,4 @@
-- name: Run apt-get update on remote hosts
+- name: Run updates on remote hosts
   hosts: all
   become: true
   tasks:
