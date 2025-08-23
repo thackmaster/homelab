@@ -21,10 +21,7 @@ ip-or-hostname:
   ansible_ask_pass: false
 ```
 
-Then run
-```
-ansible-playbook playbook.yml -i inventory.yaml -l <group-name>
-```
+Then run the same command under "username/password".
 
 You'll still be prompted for an SSH password and BECOME. Just hit enter for both of these.
 
