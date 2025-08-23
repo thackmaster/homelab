@@ -47,13 +47,13 @@
                     {{
                       container_info.container.HostConfig.PortBindings
                       | dict2items
-                      | map(attribute='key')
+                      | map(attribute='value')
+                      | map('first')
+                      | map(attribute='HostPort')
                       | zip(
                         container_info.container.HostConfig.PortBindings
                         | dict2items
-                        | map(attribute='value')
-                        | map('first')
-                        | map(attribute='HostPort')
+                        | map(attribute='key')
                       )
                       | map('join', ':')
                       | list
