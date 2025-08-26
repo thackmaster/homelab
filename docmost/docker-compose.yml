@@ -14,7 +14,8 @@ services:
       - "32000:3000"
     restart: unless-stopped
     volumes:
-      - ${MNT}:/app/data/storage
+      #- ${MNT}:/app/data/storage
+      - docmost:/app/data/storage
 
   db:
     container_name: docmost-db
@@ -33,6 +34,10 @@ services:
     restart: unless-stopped
     volumes:
       - ${MNT}/redis:/data
+
+volumes:
+  docmost:
+    name: docmost
 
 networks:
   default:
