@@ -44,20 +44,20 @@
         - name: Set published ports
           set_fact:
             ports: >-
-                    {{ 
-                      container_info.container.HostConfig.PortBindings 
-                      | dict2items 
-                      | map(attribute='key') 
-                      | zip(
-                        container_info.container.HostConfig.PortBindings 
-                        | dict2items 
-                        | map(attribute='value')
-                        | map('first')
-                        | map(attribute='HostPort')
-                      )
-                      | map('join', ':')
-                      | list 
-                    }}
+              {{ 
+                container_info.container.HostConfig.PortBindings 
+                | dict2items 
+                | map(attribute='key') 
+                | zip(
+                  container_info.container.HostConfig.PortBindings 
+                  | dict2items 
+                  | map(attribute='value')
+                  | map('first')
+                  | map(attribute='HostPort')
+                )
+                | map('join', ':')
+                | list 
+              }}
         
         - name: Show ports
           debug:
@@ -66,34 +66,34 @@
         - name: Set named volumes
           set_fact:
             named_volumes: >-
-                            {{
-                              container_info.container.Mounts
-                              | selectattr('Type', 'equalto', 'volume')
-                              | map(attribute='Name')
-                              | zip(
-                                container_info.container.Mounts
-                                | selectattr('Type', 'equalto', 'volume')
-                                | map(attribute='Destination')
-                              )
-                              | map('join', ':')
-                              | list
-                            }}
+              {{
+                container_info.container.Mounts
+                | selectattr('Type', 'equalto', 'volume')
+                | map(attribute='Name')
+                | zip(
+                  container_info.container.Mounts
+                  | selectattr('Type', 'equalto', 'volume')
+                  | map(attribute='Destination')
+                )
+                | map('join', ':')
+                | list
+              }}
 
         - name: Set bind volumes
           set_fact:
             bind_mounts: >-
-                          {{
-                            container_info.container.Mounts
-                            | selectattr('Type', 'equalto', 'bind')
-                            | map(attribute='Source')
-                            | zip(
-                              container_info.container.Mounts
-                              | selectattr('Type', 'equalto', 'bind')
-                              | map(attribute='Destination')
-                            )
-                            | map('join', ':')
-                            | list
-                          }}
+              {{
+                container_info.container.Mounts
+                | selectattr('Type', 'equalto', 'bind')
+                | map(attribute='Source')
+                | zip(
+                  container_info.container.Mounts
+                  | selectattr('Type', 'equalto', 'bind')
+                  | map(attribute='Destination')
+                )
+                | map('join', ':')
+                | list
+              }}
 
         - name: Combine volumes
           set_fact:
@@ -102,6 +102,28 @@
         - name: Show volumes
           debug:
             var: combined_volumes
+        
+        - name: Set environment variables
+          set_fact:
+            env_vars: >-
+              {{
+                dict(
+                  container_info.container.Config.Env
+                  | map('split', '=', 1)
+                )
+              }}
+
+        - name: Show env vars
+          debug:
+            var: env_vars
+
+        - name: Set network mode
+          set_fact:
+            network_mode: "{{ container_info.container.HostConfig.NetworkMode }}"
+
+        - name: Show network mode
+          debug:
+            var: network_mode
 
         - name: Set command args
           set_fact:
@@ -140,8 +162,10 @@
         name: "{{ container_name }}"
         image: "{{ container_info.container.Config.Image }}"
         restart_policy: "{{ restart }}"
+        network_mode: "{{ network_mode }}"
         published_ports: "{{ ports }}"
         volumes: "{{ combined_volumes }}"
+        env: "{{ env_vars }}"
         command: "{{ container_args }}"
         entrypoint: "{{ container_entrypoint }}"
         recreate: yes
