@@ -35,15 +35,16 @@
 
         - name: Set restart policy
           set_fact:
-            restart: "{{ container_info.container.HostConfig.RestartPolicy.Name }}"
-        
+            restart: "{{ container_info.container.HostConfig.RestartPolicy.Name | default([]) }}"
+
         - name: Show restart policy
           debug:
             var: restart
-        
+
         - name: Set published ports
           set_fact:
             ports: >-
+<<<<<<< HEAD
               {{ 
                 container_info.container.HostConfig.PortBindings 
                 | dict2items 
@@ -59,6 +60,23 @@
                 | list 
               }}
         
+=======
+                    {{
+                      container_info.container.HostConfig.PortBindings
+                      | dict2items
+                      | map(attribute='value')
+                      | map('first')
+                      | map(attribute='HostPort')
+                      | zip(
+                        container_info.container.HostConfig.PortBindings
+                        | dict2items
+                        | map(attribute='key')
+                      )
+                      | map('join', ':')
+                      | list
+                    }}
+
+>>>>>>> aa88b5645e0aa7dcfd42f6b95f7096837f0ed1ca
         - name: Show ports
           debug:
             var: ports
