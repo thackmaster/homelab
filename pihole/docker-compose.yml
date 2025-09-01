@@ -13,6 +13,8 @@ services:
       TZ: 'America/Denver'
       FTLCONF_webserver_api_password: '${WEB_PASS}'
       FTLCONF_dns_listeningMode: 'all'
+      PIHOLE_UID: ${UID}
+      PIHOLE_GID: ${GID}
     volumes:
       - '${MNT}/pihole:/etc/pihole'
       - '${MNT}:/etc/dnsmasq.d'
