@@ -13,7 +13,7 @@ services:
     network_mode: bridge
     environment:
       - TZ=US/Mountain
-      - WATCHTOWER_SCHEDULE=0 4 * * 0 #${SCHEDULE}
+      - WATCHTOWER_SCHEDULE=0 0 4 * * 0 #${SCHEDULE}
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_MONITOR_ONLY=true
       - WATCHTOWER_NOTIFICATIONS=slack
