@@ -257,7 +257,7 @@ services:
 networks:
   default:
     external: false
-    name: aar_network
+    name: arr_network
     ipam:
       config:
         - subnet: 172.20.1.0/28
