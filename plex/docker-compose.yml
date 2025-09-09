@@ -9,6 +9,7 @@ services:
       - PGID=${GID}
       - TZ=${TZ}
       - VERSION=latest
+      - PLEX_CLAIM=${PLEX_CLAIM}
     volumes:
       - /home/plex:/config
       - ${MNT}:/media
