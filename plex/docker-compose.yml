@@ -13,4 +13,5 @@ services:
     volumes:
       - /home/plex:/config
       - ${MNT}:/media
+      - ${MNT_BACKUP}:/backup
     network_mode: host
