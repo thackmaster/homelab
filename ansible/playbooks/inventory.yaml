@@ -2,17 +2,17 @@ all:
   children:
     homelab:
       children:
-        debian:
+        apt:
           hosts:
             plexums.lan:
               ansible_host: 172.16.10.4
             pipsqueak.lan:
-              ansible_host: 172.16.10.5
+              ansible_host: 172.16.30.2
             optiplex.lan:
               ansible_host: 172.16.10.6
-        redhat:
+        dnf:
           hosts:
-            redhat1.lan:
+            rocky.lan:
               ansible_host: 172.16.10.3
     azure:
       hosts:

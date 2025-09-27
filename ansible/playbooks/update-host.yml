@@ -1,63 +1,99 @@
 - name: Run updates on remote hosts
   hosts: all
   become: true
+  vars:
+    ansible_distribution_dnf: ["Fedora", "RedHat", "Rocky", "Alma"]
+    ansible_distribution_apt: ["Ubuntu", "Debian"]
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
 
-    - name: Update packages (apt)
-      apt:
-        upgrade: yes
-        update_cache: yes
-        cache_valid_time: 3600
-        autoremove: true
-        clean: true
-      when: ansible_distribution in ["Ubuntu", "Debian"]
-
-    - name: Update packages (dnf/yum)
+    - name: APT systems block
       block:
+        - name: Entered APT block
+          debug:
+            msg: "Running APT tasks"
+        - name: Update packages
+          apt:
+            upgrade: yes
+            update_cache: yes
+            cache_valid_time: 3600
+            autoremove: true
+            clean: true
+        - name: Remove hanging Docker artifacts
+          community.docker.docker_prune:
+            containers: false
+            images: true
+            networks: true
+            volumes: false
+            builder_cache: true
+        - name: Check for reboot requirement
+          stat:
+            path: /var/run/reboot-required
+          register: apt_reboot_required
+        - name: Print host requiring reboot
+          debug:
+            msg: "{{ inventory_hostname }} requires a reboot"
+          when: apt_reboot_required.stat.exists
+        - name: Prompt for reboot
+          pause:
+            prompt: "Reboot required to complete updates. Reboot now? [y/N]"
+          when: apt_reboot_required.stat.exists
+          register: apt_reboot_prompt
+        - name: Reboot (if necessary)
+          reboot:
+            msg: "Reboot initiated by Ansible"
+            test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
+          when:
+            - apt_reboot_required.stat.exists
+            - apt_reboot_prompt is defined
+            - apt_reboot_prompt.user_input | lower == 'y'
+      when: ansible_distribution_apt is defined and ansible_distribution in ansible_distribution_apt
 
-        - name: Update packages (dnf/yum)
-          yum:
+    - name: DNF systems block
+      block:
+        - name: Entered DNF block
+          debug:
+            msg: "Running DNF tasks"
+        - name: Install dnf-utils
+          dnf:
+            name: dnf-utils
+            state: present
+        - name: Update packages
+          dnf:
             name: '*'
             state: latest
-
-        - name: Clean up packages (dnf/yum)
-          yum:
+            update_cache: yes
+        - name: Clean up packages
+          dnf:
             autoremove: yes
-
-      when: ansible_distribution in ["Fedora", "CentOS", "RedHat"]
-
-    - name: Remove hanging Docker artifacts (apt)
-      community.docker.docker_prune:
-        containers: false
-        images: true
-        networks: true
-        volumes: false
-        builder_cache: true
-      when: ansible_distribution in ["Ubuntu", "Debian"]
-
-    - name: Remove hanging Docker artifacts (dnf/yum)
-      block:
-
-        - name: Remove hanging Docker images (dnf/yum)
-          command: docker image prune -f
-
-        - name: Remove hanging Docker networks (dnf/yum)
-          command: docker network prune -f
-
-      when: ansible_distribution in ["Fedora", "CentOS", "RedHat"]
-
-    - name: Check for reboot requirement
-      stat:
-        path: /var/run/reboot-required
-      register: reboot_required_file
-
-    - name: Prompt for reboot (if necessary)
-      pause:
-        prompt: "Press ENTER to reboot {{ inventory_hostname }} now, or Ctrl+C to abort."
-      when: reboot_required_file.stat.exists
-
-    - name: Reboot (if necessary)
-      reboot:
-        msg: "Reboot initiated by Ansible"
-        test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
-      when: reboot_required_file.stat.exists
+        - name: Remove hanging Docker artifacts
+          block:
+          - name: Remove hanging Docker images
+            command: docker image prune -f
+          - name: Remove hanging Docker networks
+            command: docker network prune -f
+        - name: Check for reboot requirement
+          shell: needs-restarting -r
+          register: dnf_reboot_check
+          ignore_errors: true
+          failed_when: false
+        - name: Set dnf_reboot_required fact
+          set_fact:
+            dnf_reboot_required: "{{ dnf_reboot_check.rc == 1 }}"
+        - name: Print host requiring reboot
+          debug:
+            msg: "{{ inventory_hostname }} requires a reboot"
+          when: dnf_reboot_required
+        - name: Prompt for reboot (if necessary)
+          pause:
+            prompt: "Reboot required to complete updates. Reboot now? [y/N]"
+          when: dnf_reboot_required
+          register: dnf_reboot_prompt
+        - name: Reboot (if necessary)
+          reboot:
+            msg: "Reboot initiated by Ansible"
+            test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
+          when:
+            - dnf_reboot_required
+            - dnf_reboot_prompt.user_input | lower == 'y'
+      when: ansible_distribution_dnf is defined and ansible_distribution in ansible_distribution_dnf
