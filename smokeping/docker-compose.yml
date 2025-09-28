@@ -3,6 +3,7 @@ services:
     image: lscr.io/linuxserver/smokeping:latest
     container_name: smokeping
     hostname: smokeping #optional
+    network_mode: 'bridge'
     environment:
       - PUID=${UID}
       - PGID=${GID}
