@@ -1,0 +1,159 @@
+- name: New DNF machine
+  hosts: all
+  become: true
+  vars_prompt:
+    - name: new_user
+      prompt: "Enter the username for the new user to be created. Press Enter to skip."
+      private: no
+    - name: user_pass
+      prompt: "Enter the password for the new user to be created. Press Enter to skip."
+      private: yes
+    - name: machine_name
+      prompt: "Enter the hostname for the new machine (no spaces). Press Enter to skip."
+      private: no
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ machine_name }}"
+      when: machine_name is defined and machine_name != ""
+    - name: Create new user
+      command: adduser {{ new_user }}
+      failed_when: false
+    - name: Add user to wheel
+      command: usermod -aG wheel {{ new_user }}
+    - name: SSH vs Password
+      pause:
+        prompt: Do you want to set up SSH key authentication for the new user? [y/N]
+      register: auth_choice
+    - name: SSH key auth setup
+      block:
+        - name: Ask ssh-keygen
+          pause:
+            prompt: "Have you already generated a key pair for this host? [y/N]"
+          register: keygen_check
+        - name: Generate SSH key pair
+          block:
+            - name: Ask for key name
+              pause:
+                prompt: "Enter a name for the new SSH key pair (no spaces)"
+              register: key_name
+            - name: Generate SSH key pair
+              delegate_to: localhost
+              command: ssh-keygen -t rsa -b 4096 -f ~/.ssh/{{ key_name.user_input }} -N ""
+            - name: Read generated public key
+              delegate_to: localhost
+              slurp:
+                src: "{{ lookup('file', '~/.ssh/' + key_name.user_input + '.pub') }}"
+              register: slurped_key
+            - name: Set public_key fact
+              set_fact:
+                public_key: "{{ slurped_key.content | b64decode }}"
+            - name: Add public key to authorized_keys
+              copy:
+                content: "{{ public_key }}"
+                dest: /home/{{ new_user }}/.ssh/authorized_keys
+                mode: '0600'
+                owner: "{{ new_user }}"
+                group: "{{ new_user }}"
+          when: keygen_check.user_input | default('n') | lower != 'y'
+        - name: Create .ssh directory
+          file: path=/home/{{ new_user }}/.ssh state=directory mode=0700 owner={{ new_user }} group={{ new_user }}
+        - name: Add authorized_keys file
+          copy:
+            content: "{{ lookup('file', '~/.ssh/digitalocean_homelab_rocky.pub') }}"
+            dest: /home/{{ new_user }}/.ssh/authorized_keys
+            mode: '0600'
+            owner: "{{ new_user }}"
+            group: "{{ new_user }}"
+        - name: Set No Password SSH for new user
+          lineinfile:
+            path: /etc/sudoers
+            regexp: "^{{ new_user }} ALL=(ALL) NOPASSWD: ALL$"
+            line: "{{ new_user }} ALL=(ALL) NOPASSWD: ALL"
+            state: present
+            validate: "/usr/sbin/visudo -cf %s"
+      when: auth_choice.user_input is defined and auth_choice.user_input | lower == 'y'
+    - name: Password auth setup
+      block:
+        - name: Apply password for new user
+          user:
+            name: "{{ new_user }}"
+            password: "{{ user_pass | password_hash('sha512') }}"
+            update_password: always
+        - name: Enable SSH password auth
+          replace:
+            path: /etc/ssh/sshd_config
+            regexp: '^#?PasswordAuthentication\s+.*'
+            replace: 'PasswordAuthentication yes'
+            backup: yes
+        - name: Restart SSH service
+          service:
+            name: sshd
+            state: restarted
+      when: auth_choice.user_input | default('n') | lower != 'y'
+    - name: (pre-req) Install Tailscale?
+      pause:
+        prompt: Do you want to install Tailscale now? [y/N]
+      register: tailscale_install_prompt
+    - name: Install Tailscale (if requested)
+      block:
+        - name: Tailscale install command
+          pause:
+            prompt: Please enter the Tailscale install command from the Tailscale admin console and press Enter to continue.
+          register: tailscale_install_command
+        - name: Install Tailscale
+          shell: "{{ tailscale_install_command.user_input }}"
+      when: tailscale_install_prompt.user_input | lower == 'y'
+    - name: Install Docker
+      block:
+        - name: Add Docker repository
+          ansible.builtin.command: >
+            dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+        - name: Enable Docker repo
+          ansible.builtin.command: >
+            dnf config-manager --set-enabled docker-ce-stable
+        - name: Install Docker packages
+          dnf:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
+            state: present
+        - name: Start and enable Docker
+          systemd:
+            name: docker
+            state: started
+            enabled: true
+        - name: Add user to docker group
+          user:
+            name: "{{ new_user }}"
+            groups: docker
+            append: true
+    - name: Update all packages
+      command: dnf update -y
+    - name: Install new packages
+      dnf:
+        name:
+          - vim
+          - net-tools
+          - nfs-utils
+    - name: Clean up packages
+      dnf:
+        autoremove: yes
+    # - name: Disable root SSH login
+    #   lineinfile:
+    #     path: /etc/ssh/sshd_config
+    #     regexp: '^PermitRootLogin'
+    #     line: 'PermitRootLogin no'
+    #     state: present
+    #     backup: yes
+    - name: Restart machine
+      reboot:
+        msg: "Reboot initiated by Ansible"
+      ignore_errors: true
+      failed_when: false
+    - name: Reminder to disable root SSH login
+      debug:
+        msg: "Remember to disable root SSH login if you haven't already! /etc/ssh/sshd_config, PermitRootLogin no"
