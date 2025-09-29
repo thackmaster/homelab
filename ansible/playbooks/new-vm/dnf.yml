@@ -16,11 +16,14 @@
       hostname:
         name: "{{ machine_name }}"
       when: machine_name is defined and machine_name != ""
-    - name: Create new user
-      command: adduser {{ new_user }}
-      failed_when: false
-    - name: Add user to wheel
-      command: usermod -aG wheel {{ new_user }}
+    - name: Create new user block
+      block:
+        - name: Create new user
+          command: adduser {{ new_user }}
+          failed_when: false
+        - name: Add user to wheel
+          command: usermod -aG wheel {{ new_user }}
+      when: new_user is defined and new_user != ""
     - name: SSH vs Password
       pause:
         prompt: Do you want to set up SSH key authentication for the new user? [y/N]
