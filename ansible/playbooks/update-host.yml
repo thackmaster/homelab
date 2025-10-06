@@ -2,10 +2,17 @@
   hosts: all
   become: true
   vars:
-    ansible_distribution_dnf: ["Fedora", "RedHat", "Rocky", "Alma"]
+    ansible_distribution_dnf: ["Fedora", "RedHat", "Rocky", "AlmaLinux"]
     ansible_distribution_apt: ["Ubuntu", "Debian"]
     ansible_python_interpreter: /usr/bin/python3
   tasks:
+    - name: Docker check
+      command: which docker
+      register: docker_check
+      ignore_errors: true
+    - name: Set docker_installed fact
+      ansible.builtin.set_fact:
+        docker_installed: "{{ docker_check.rc == 0 }}"
 
     - name: APT systems block
       block:
@@ -26,27 +33,28 @@
             networks: true
             volumes: false
             builder_cache: true
+          when: docker_installed
         - name: Check for reboot requirement
           stat:
             path: /var/run/reboot-required
           register: apt_reboot_required
-        - name: Print host requiring reboot
-          debug:
-            msg: "{{ inventory_hostname }} requires a reboot"
+        - name: Reboot block
+          block:
+          - name: Print host requiring reboot
+            debug:
+              msg: "{{ inventory_hostname }} requires a reboot"
+          - name: Prompt for reboot
+            pause:
+              prompt: "Reboot required to complete updates. Reboot now? [y/N]"
+            register: apt_reboot_prompt
+          - name: Reboot (if necessary)
+            reboot:
+              msg: "Reboot initiated by Ansible"
+              test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
+            when:
+              - apt_reboot_prompt is defined
+              - apt_reboot_prompt.user_input | lower == 'y'
           when: apt_reboot_required.stat.exists
-        - name: Prompt for reboot
-          pause:
-            prompt: "Reboot required to complete updates. Reboot now? [y/N]"
-          when: apt_reboot_required.stat.exists
-          register: apt_reboot_prompt
-        - name: Reboot (if necessary)
-          reboot:
-            msg: "Reboot initiated by Ansible"
-            test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
-          when:
-            - apt_reboot_required.stat.exists
-            - apt_reboot_prompt is defined
-            - apt_reboot_prompt.user_input | lower == 'y'
       when: ansible_distribution_apt is defined and ansible_distribution in ansible_distribution_apt
 
     - name: DNF systems block
@@ -72,6 +80,7 @@
             command: docker image prune -f
           - name: Remove hanging Docker networks
             command: docker network prune -f
+          when: docker_installed
         - name: Check for reboot requirement
           shell: needs-restarting -r
           register: dnf_reboot_check
@@ -80,20 +89,24 @@
         - name: Set dnf_reboot_required fact
           set_fact:
             dnf_reboot_required: "{{ dnf_reboot_check.rc == 1 }}"
-        - name: Print host requiring reboot
-          debug:
-            msg: "{{ inventory_hostname }} requires a reboot"
+        - name: Reboot block
+          block:
+          - name: Print host requiring reboot
+            debug:
+              msg: "{{ inventory_hostname }} requires a reboot"
+            when: dnf_reboot_required
+          - name: Prompt for reboot (if necessary)
+            pause:
+              prompt: "Reboot required to complete updates. Reboot now? [y/N]"
+            when: dnf_reboot_required
+            register: dnf_reboot_prompt
+          - name: Reboot (if necessary)
+            reboot:
+              msg: "Reboot initiated by Ansible"
+              test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
+            when:
+              - dnf_reboot_prompt is defined
+              - dnf_reboot_prompt.user_input | lower == 'y'
+            ignore_errors: true
           when: dnf_reboot_required
-        - name: Prompt for reboot (if necessary)
-          pause:
-            prompt: "Reboot required to complete updates. Reboot now? [y/N]"
-          when: dnf_reboot_required
-          register: dnf_reboot_prompt
-        - name: Reboot (if necessary)
-          reboot:
-            msg: "Reboot initiated by Ansible"
-            test_command: "logger '[ansible]: system was rebooted from Ansible after kernel upgrade'"
-          when:
-            - dnf_reboot_required
-            - dnf_reboot_prompt.user_input | lower == 'y'
       when: ansible_distribution_dnf is defined and ansible_distribution in ansible_distribution_dnf
