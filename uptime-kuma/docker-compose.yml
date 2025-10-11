@@ -1,0 +1,14 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - ${PORT}:3001
+    volumes:
+      - uptime-kuma:/app/data
+
+volumes:
+  uptime-kuma:
+    external: false
