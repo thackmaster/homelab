@@ -22,6 +22,12 @@ services:
     networks:
       - default
       - tinyauth_net
+    labels:
+      caddy: ${URL}
+      caddy.reverse_proxy: "{{ upstreams 80 }}"
+      caddy.import: tinyauth_forwarder *
+      caddy.forward_auth: tinyauth:3000
+      caddy.forware_auth.uri: /api/auth/caddy
     
   db:
     container_name: vikunja_db
