@@ -260,5 +260,5 @@ networks:
     name: arr_network
     ipam:
       config:
-        - subnet: 172.20.1.0/28
-          gateway: 172.20.1.1
+        - subnet: 172.25.1.0/28
+          gateway: 172.25.1.1

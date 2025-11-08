@@ -56,5 +56,5 @@ networks:
         external: false
         ipam:
             config:
-                - subnet: 172.20.4.0/29
-                  gateway: 172.20.4.1
+                - subnet: 172.25.4.0/29
+                  gateway: 172.25.4.1
