@@ -1,0 +1,50 @@
+services:
+  vikunja:
+    container_name: vikunja
+    image: vikunja/vikunja:latest
+    environment:
+      VIKUNJA_SERVICE_PUBLICURL: ${URL}
+      VIKUNJA_DATABASE_HOST: ${DB_HOST}
+      VIKUNJA_DATABASE_PASSWORD: ${DB_PASS}
+      VIKUNJA_DATABASE_TYPE: postgres
+      VIKUNJA_DATABASE_USER: ${DB_USER}
+      VIKUNJA_DATABASE_DATABASE: ${DB_NAME}
+      VIKUNJA_SERVICE_JWTSECRET: ${SECRET}
+      VIKUNJA_FILES_BASEPATH: /app/vikunja/files
+    ports:
+      - 3456:3456
+    volumes:
+      - vikunja_data:/app/vikunja/files
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    
+  db:
+    container_name: vikunja_db
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+    volumes:
+      - vikunja_db:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER"]
+      interval: 2s
+      start_period: 30s
+
+volumes:
+  vikunja_data:
+    name: vikunja_data
+  vikunja_db:
+    name: vikunja_db
+
+networks:
+  default:
+    name: vikunja_network
+    external: false
+    ipam:
+      config:
+        - subnet: 172.20.9.0/29
+          gateway: 172.20.9.1

@@ -1,0 +1,28 @@
+services:
+  tinyauth:
+    image: ghcr.io/steveiliop56/tinyauth:v4
+    container_name: tinyauth
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - APP_URL=${APP_URL}
+      - USERS=${USERS}
+      - LDAP_ADDRESS=ldap://172.16.10.6:3890
+      - LDAP_BIND_DN=${LDAP_DN}
+      - LDAP_BIND_PASSWORD=${LDAP_BIND_PASS}
+      - LDAP_BASE_DN=${LDAP_BASE_DN}
+      - LDAP_SEARCH_FILTER=(uid=%s)
+      - LDAP_INSECURE=true
+    labels:
+      caddy: ${APP_URL}
+      caddy.reverse_proxy: "{{upstreams 3000}}"
+
+networks:
+    default:
+      name: tinyauth_net
+      external: false
+      ipam:
+        config:
+          - subnet: 172.20.11.0/28
+            gateway: 172.20.11.1

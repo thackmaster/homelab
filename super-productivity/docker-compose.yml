@@ -1,0 +1,54 @@
+services:
+  # Super Productivity app
+  app:
+    container_name: super-productivity_app
+    image: johannesjo/super-productivity:latest
+    restart: unless-stopped
+    ports:
+      - '32650:80'
+    environment:
+      WEBDAV_BASE_URL: ${WEBDAV_BASE_URL}
+      WEBDAV_USERNAME: ${WEBDAV_USERNAME}
+      WEBDAV_SYNC_FOLDER_PATH: /super
+      SYNC_INTERVAL: 5
+      IS_COMPRESSION_ENABLED: true
+      IS_ENCRYPTION_ENABLED: false
+    labels:
+      caddy: ${SUPER_URL}
+      caddy.reverse_proxy: "{{ upstreams 80 }}"
+      caddy.import: tinyauth_forwarder *
+      caddy.forward_auth: tinyauth:3000
+      caddy.forward_auth.uri: /api/auth/caddy
+    networks:
+      - default
+      - tinyauth_net
+
+  # WebDAV sync server
+  webdav:
+    container_name: super-productivity_webdav
+    hostname: webdav
+    image: hacdias/webdav:latest
+    restart: unless-stopped
+    command: --config /config.yml
+    #ports:
+      #- '2345:2345'
+    volumes:
+      - ${MNT}/webdav.yml:/config.yml:ro
+      - ${MNT}:/data
+    labels:
+      caddy: ${WEBDAV_BASE_URL}
+      caddy.reverse_proxy: "{{ upstreams 2345 }}"
+    networks:
+      - default
+      - tinyauth_net
+
+networks:
+  default:
+    name: super-productivity_net
+    external: false
+    ipam:
+      config:
+        - subnet: 172.25.10.0/29
+          gateway: 172.25.10.1
+  tinyauth_net:
+    external: true

@@ -1,0 +1,28 @@
+services:
+  lldap:
+    image: lldap/lldap:stable
+    container_name: lldap
+    ports:
+      - 3890:3890
+      - 17170:17170
+    volumes:
+      - lldap_data:/data
+    environment:
+      - TZ=America/Denver
+      - LLDAP_JWT_SECRET=${SECRET}
+      - LLDAP_KEY_SEED=${SEED}
+      - LLDAP_LDAP_BASE_DN=${BASE_DN}
+      - LLDAP_LDAP_USER_PASS=${USER_PASS}
+
+volumes:
+  lldap_data:
+    external: false
+
+networks:
+  default:
+    name: lldap_net
+    external: false
+    ipam:
+      config:
+        - subnet: 172.20.1.0/30
+          gateway: 172.20.1.1

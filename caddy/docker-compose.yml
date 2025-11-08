@@ -1,0 +1,24 @@
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${MNT}:/data
+    environment:
+      - CADDY_INGRESS_NETWORK=tinyauth_net
+    labels:
+      caddy: (tinyauth_forwarder)
+      caddy.forward_auth: tinyauth:3000
+      caddy.forward_auth.uri: /api/auth/caddy
+      caddy.forward_auth.copy_headers: "Remote-User Remote-Name Remote-Email Remote-Groups"
+    networks:
+      - tinyauth_net
+
+networks:
+  tinyauth_net:
+    external: true
