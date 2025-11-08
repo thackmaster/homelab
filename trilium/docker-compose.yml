@@ -12,3 +12,9 @@ services:
     volumes:
       - ${MNT}:/home/node/trilium-data
     network_mode: bridge
+    labels:
+      caddy: ${URL}
+      caddy.reverse_proxy: "{{ upstreams 8080 }}"
+      caddy.import: tinyauth_forwarder *
+      caddy.forward_auth: tinyauth:3000
+      caddy.forward_auth.uri: /api/auth/caddy
