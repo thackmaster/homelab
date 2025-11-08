@@ -11,7 +11,9 @@ services:
     restart: unless-stopped
     volumes:
       - ${MNT}:/home/node/trilium-data
-    network_mode: bridge
+    networks:
+      - default
+      - tinyauth_net
     labels:
       caddy: ${URL}
       caddy.reverse_proxy: "{{ upstreams 8080 }}"
