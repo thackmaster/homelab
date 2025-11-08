@@ -18,3 +18,14 @@ services:
       caddy.import: tinyauth_forwarder *
       caddy.forward_auth: tinyauth:3000
       caddy.forward_auth.uri: /api/auth/caddy
+
+networks:
+  default:
+    name: trilium_net
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.25.11.0/30
+          gateway: 172.25.11.1
+  tinyauth_net:
+    external: true
