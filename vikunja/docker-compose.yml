@@ -19,6 +19,9 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - default
+      - tinyauth_net
     
   db:
     container_name: vikunja_db
@@ -43,8 +46,10 @@ volumes:
 networks:
   default:
     name: vikunja_network
-    external: false
+    internal: true
     ipam:
       config:
         - subnet: 172.20.9.0/29
           gateway: 172.20.9.1
+  tinyauth_net:
+    external: true
