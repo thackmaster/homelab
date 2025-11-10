@@ -19,7 +19,8 @@ services:
     labels:
       caddy: ${APP_URL}
       caddy.reverse_proxy: "{{ upstreams 32000 }}"
-      caddy.reverse_proxy.header_up: "Connection {>Connection}; Upgrade {>Upgrade}"
+      caddy.reverse_proxy.header_up.Connection: "{>Connection}"
+      caddy.reverse_proxy.header_up.Upgrade: "{>Upgrade}"
     networks:
       - default
       - tinyauth_net
