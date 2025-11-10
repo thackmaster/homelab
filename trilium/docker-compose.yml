@@ -27,7 +27,7 @@ networks:
     internal: true
     ipam:
       config:
-        - subnet: 172.25.11.0/30
-          gateway: 172.25.11.1
+        - subnet: 172.20.2.0/30
+          gateway: 172.20.2.1
   tinyauth_net:
     external: true
