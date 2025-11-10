@@ -16,6 +16,16 @@ services:
     volumes:
       #- ${MNT}:/app/data/storage
       - docmost:/app/data/storage
+    labels:
+      caddy: ${APP_URL}
+      caddy.reverse_proxy: "{{ upstreams 32000 }}"
+      caddy.reverse_proxy.transport: http
+      caddy.reverse_proxy.transport.headers.up:
+        - "Connection {>Connection}"
+        - "Upgrade {>Upgrade}"
+    networks:
+      - default
+      - tinyauth_net
 
   db:
     container_name: docmost-db
