@@ -18,9 +18,9 @@ services:
       - docmost:/app/data/storage
     labels:
       caddy: ${APP_URL}
-      caddy.reverse_proxy: "{{ upstreams 32000 }}"
-      caddy.reverse_proxy.header_up.Connection: "{>Connection}"
-      caddy.reverse_proxy.header_up.Upgrade: "{>Upgrade}"
+      caddy.reverse_proxy: "{{ upstreams 3000 }}"
+      caddy.reverse_proxy.header_up_0: "Connection {>Connection}"
+      caddy.reverse_proxy.header_up_1: "Upgrade {>Upgrade}"
     networks:
       - default
       - tinyauth_net
