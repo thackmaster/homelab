@@ -11,7 +11,7 @@ services:
       VIKUNJA_DATABASE_DATABASE: ${DB_NAME}
       VIKUNJA_SERVICE_JWTSECRET: ${SECRET}
       VIKUNJA_FILES_BASEPATH: /app/vikunja/files
-    user: "${UID}:{$GID}"
+    user: "${UID}:${GID}"
     ports:
       - 3456:3456
     volumes:
