@@ -3,7 +3,7 @@
 services:
   watchtower:
     container_name: watchtower
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     hostname: ${HOSTNAME}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
