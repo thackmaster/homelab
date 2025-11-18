@@ -53,5 +53,5 @@ networks:
       config:
         - subnet: 172.25.3.0/29
           gateway: 172.25.3.1
-    tinyauth_net:
-      external: true
+  tinyauth_net:
+    external: true
