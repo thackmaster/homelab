@@ -44,7 +44,7 @@ if [[ "$pg_choice" =~ ^[Yy]$ ]]; then
 fi
 
 ## Mattermost
-$mm_dir="$/opt/mattermost"
+$mm_dir="/opt/mattermost"
 $mm_backup_dir="/opt/backups/mattermost"
 cd ~
 ls -l .
