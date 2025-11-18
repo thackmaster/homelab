@@ -19,6 +19,12 @@ services:
     ports:
       - ${PORT}:80
     restart: unless-stopped
+    networks:
+      - default
+      - tinyauth_net
+    labels:
+      caddy: ${URL}
+      caddy.reverse_proxy: "{{ upstreams 80 }}"
     
   mariadb:
     image: lscr.io/linuxserver/mariadb:latest
@@ -36,12 +42,16 @@ services:
     #ports:
      #- 3306:3306
     restart: unless-stopped
+    networks:
+      - default
 
 networks:
   default:
     name: bookstack_network
-    external: false
+    internal: true
     ipam:
       config:
         - subnet: 172.25.3.0/29
           gateway: 172.25.3.1
+    tinyauth_net:
+      external: true
