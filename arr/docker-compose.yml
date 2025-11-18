@@ -24,6 +24,7 @@ services:
       - PGID=65536
       - TZ=America/Denver
       - KOMETA_RUN=${KOMETA_RUN} #run immediately
+      - KOMETA_TIMES=05:00|12:00|18:00|22:00
     volumes:
       - ${MNT_EXT_CONFIG}/kometa:/config:rw
 

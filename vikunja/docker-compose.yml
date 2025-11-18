@@ -11,10 +11,11 @@ services:
       VIKUNJA_DATABASE_DATABASE: ${DB_NAME}
       VIKUNJA_SERVICE_JWTSECRET: ${SECRET}
       VIKUNJA_FILES_BASEPATH: /app/vikunja/files
+    user: "${UID}:${GID}"
     ports:
       - 3456:3456
     volumes:
-      - vikunja_data:/app/vikunja/files
+      - ${MNT}/data:/app/vikunja/files
     depends_on:
       db:
         condition: service_healthy
@@ -36,18 +37,12 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_USER: ${DB_USER}
     volumes:
-      - vikunja_db:/var/lib/postgresql/data
+      - ${MNT}/db:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER"]
       interval: 2s
       start_period: 30s
-
-volumes:
-  vikunja_data:
-    name: vikunja_data
-  vikunja_db:
-    name: vikunja_db
 
 networks:
   default:
