@@ -256,10 +256,10 @@ services:
       # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
       - UPDATER_PERIOD=24h
       - BLOCK_MALICIOUS=off
-      - UNBLOCK=${UNBLOCK_URLS}
-      - DOT_PROVIDERS=${DOT_PROVIDERS:-quad9,cloudflare}
-      - DOT_CACHING=off
-      - HEALTH_ADDRESS_TO_PING=${GLUETUN_HEALTH_PING:-9.9.9.9}
+      - DNS_UNBLOCK_HOSTNAMES=${UNBLOCK_URLS}
+      - DNS_UPSTREAM_RESOLVERS=${DNS_UPSTREAM_RESOLVERS:-quad9,cloudflare}
+      - DNS_CACHING=off
+      - HEALTH_TARGET_ADDRESS=${GLUETUN_HEALTH_PING:-9.9.9.9}
 
 networks:
   default:
