@@ -264,7 +264,7 @@ services:
 networks:
   default:
     name: arr_network
-    internal: true
+    internal: false
     ipam:
       config:
         - subnet: 172.25.1.0/28
