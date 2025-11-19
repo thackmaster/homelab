@@ -5,7 +5,9 @@ services:
     environment:
       USER_GID: ${GID}
       USER_UID: ${UID}
-    network_mode: bridge
+    networks:
+      - default
+      - tinyauth_net
     ports:
       - ${PORT}:3000
       - 222:22
@@ -14,3 +16,17 @@ services:
       - ${MNT}:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    labels:
+      caddy: ${URL}
+      caddy.reverse_proxy: "{{ upstreams 3000 }}"
+
+networks:
+  default:
+    name: gitea_net
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.25.12.0/30
+          gateway: 172.25.12.1
+  tinyauth_net:
+    external: true
