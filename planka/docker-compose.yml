@@ -19,10 +19,15 @@ services:
       - ${MNT}/user-avatars:/app/public/user-avatars
       - ${MNT}/favicons:/app/public/favicons
     networks:
-      - planka_network
+      - default
+      - tinyauth_net
     depends_on:
       postgres:
         condition: service_healthy
+    labels:
+      caddy: ${URL}
+      caddy.reverse_proxy: "{{ upstreams ${PORT} }}"
+  
   postgres:
     container_name: planka-db
     image: postgres:16-alpine
@@ -40,13 +45,15 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - planka_network
+      - default
 
 networks:
-  planka_network:
+  default:
     name: planka_network
-    external: false
+    internal: true
     ipam:
       config:
         - subnet: 172.25.5.0/29
           gateway: 172.25.5.1
+  tinyauth_net:
+    external: true
