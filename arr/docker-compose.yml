@@ -40,6 +40,12 @@ services:
     volumes:
       - ${MNT_EXT_CONFIG}/overseerr:/app/config
     restart: unless-stopped
+    networks:
+      - default
+      - tinyauth_net
+    labels:
+      caddy: ${REQUEST_URL}
+      caddy.reverse_proxy: "{{ upstreams 5055}}"
   
   prowlarr: #overview management
     hostname: prowlarr
@@ -257,9 +263,11 @@ services:
 
 networks:
   default:
-    external: false
     name: arr_network
+    internal: true
     ipam:
       config:
         - subnet: 172.25.1.0/28
           gateway: 172.25.1.1
+  tinyauth_net:
+    external: true
