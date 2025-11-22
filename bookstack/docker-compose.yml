@@ -5,7 +5,7 @@ services:
     environment:
       - PUID=${UID}
       - PGID=${GID}
-      - TZ=US/Mountain
+      - TZ=America/Denver
       - APP_URL=${URL}
       - APP_KEY=${APP_KEY}
       - DB_HOST=${DB_HOST}
