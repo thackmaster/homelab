@@ -191,7 +191,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_EXT_CONFIG}/qbittorrent:/config
-      - ${MNT_MEDIA}/Downloads/torrent:/downloads
+      - ${MNT_MEDIA}/Downloads:/downloads
     depends_on:
       gluetun:
         condition: service_healthy
@@ -208,7 +208,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_EXT_CONFIG}/sabnzbd:/config
-      - ${MNT_MEDIA}/Downloads/usenet:/downloads
+      - ${MNT_MEDIA}/Downloads:/downloads
     depends_on:
       gluetun:
         condition: service_healthy
