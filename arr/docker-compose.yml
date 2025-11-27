@@ -87,10 +87,11 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_CONFIG}/sonarr:/config:rw
-      - ${MNT_TV}:/tv:rw #optional
-      - ${MNT_CARTOONS}:/cartoons:rw #optional
-      - ${MNT_DOWNLOADS}:/downloads:rw #optional
-      - ${MNT_ANIME}:/anime:rw #optional
+      - ${MNT_MEDIA}:/media:rw
+      #- ${MNT_TV}:/tv:rw #optional
+      #- ${MNT_CARTOONS}:/cartoons:rw #optional
+      #- ${MNT_DOWNLOADS}:/downloads:rw #optional
+      #- ${MNT_ANIME}:/anime:rw #optional
     ports:
       - ${SONARR_PORT}:8989
     restart: unless-stopped
