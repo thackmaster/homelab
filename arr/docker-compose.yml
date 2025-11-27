@@ -84,7 +84,7 @@ services:
       - PGID=${GID}
       - TZ=${TZ}
     volumes:
-      - ${MNT_CONFIG}/sonarr:/config:rw
+      - ${MNT_EXT_CONFIG}/sonarr:/config:rw
       - ${MNT_MEDIA}:/media:rw
     ports:
       - ${SONARR_PORT}:8989
