@@ -71,8 +71,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_CONFIG}/radarr:/config:rw
-      - ${MNT_MOVIES}:/movies:rw #optional
-      - ${MNT_DOWNLOADS}:/downloads:rw #optional
+      - ${MNT_MEDIA}:/media:rw
+      #- ${MNT_DOWNLOADS}:/downloads:rw #optional
     ports:
       - ${RADARR_PORT}:7878
     restart: unless-stopped
