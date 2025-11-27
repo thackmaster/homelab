@@ -10,8 +10,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_CONFIG}/bazarr:/config:rw
-      - ${MNT_MOVIES}:/movies:rw #optional
-      - ${MNT_TV}:/tv:rw #optional
+      - ${MNT_MEDIA}:/media:rw
     ports:
       - ${BAZARR_PORT}:6767
     restart: unless-stopped
@@ -72,7 +71,6 @@ services:
     volumes:
       - ${MNT_CONFIG}/radarr:/config:rw
       - ${MNT_MEDIA}:/media:rw
-      #- ${MNT_DOWNLOADS}:/downloads:rw #optional
     ports:
       - ${RADARR_PORT}:7878
     restart: unless-stopped
@@ -88,10 +86,6 @@ services:
     volumes:
       - ${MNT_CONFIG}/sonarr:/config:rw
       - ${MNT_MEDIA}:/media:rw
-      #- ${MNT_TV}:/tv:rw #optional
-      #- ${MNT_CARTOONS}:/cartoons:rw #optional
-      #- ${MNT_DOWNLOADS}:/downloads:rw #optional
-      #- ${MNT_ANIME}:/anime:rw #optional
     ports:
       - ${SONARR_PORT}:8989
     restart: unless-stopped
@@ -197,7 +191,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_EXT_CONFIG}/qbittorrent:/config
-      - ${MNT_DOWNLOADS}:/downloads
+      - ${MNT_DOWNLOADS}:/downloads/torrent
     depends_on:
       gluetun:
         condition: service_healthy
@@ -214,7 +208,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_EXT_CONFIG}/sabnzbd:/config
-      - ${MNT_DOWNLOADS}:/downloads
+      - ${MNT_DOWNLOADS}:/downloads/usenet
     depends_on:
       gluetun:
         condition: service_healthy
