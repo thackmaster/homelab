@@ -22,9 +22,12 @@ services:
     networks:
       - default
       - auth_net
-    labels:
-      caddy: ${URL}
-      caddy.reverse_proxy: "{{ upstreams 3456 }}"
+      - caddy
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams 3456 }}"
+        caddy.tls: "internal"
     
   db:
     container_name: vikunja_db
@@ -45,5 +48,8 @@ networks:
     name: vikunja_network
     driver: overlay
     internal: true
+  caddy:
+    name: caddy_caddy
+    external: true
   auth_net:
     external: true
