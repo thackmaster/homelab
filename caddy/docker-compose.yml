@@ -19,10 +19,8 @@ services:
       - caddy
       - caddy_controller
     deploy:
-      mode: global
-      placement:
-        constraints:
-          - node.role == manager
+      mode: replicated
+      replicas: 2
       labels:
         caddy_controlled_server:
 
