@@ -11,14 +11,19 @@ services:
     volumes:
       - ${MNT}:/home/node/trilium-data
     networks:
-      - auth_net
-    labels:
-      caddy: ${URL}
-      caddy.reverse_proxy: "{{ upstreams 8080 }}"
-      caddy.import: tinyauth_forwarder *
-      caddy.forward_auth: tinyauth:3000
-      caddy.forward_auth.uri: /api/auth/caddy
+      - tinyauth_net
+      - caddy
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams 8080 }}"
+        caddy.import: tinyauth_forwarder *
+        caddy.forward_auth: tinyauth:3000
+        caddy.forward_auth.uri: /api/auth/caddy
 
 networks:
-  auth_net:
+  tinyauth_net:
+    external: true
+  caddy:
+    name: caddy_caddy
     external: true
