@@ -8,7 +8,7 @@ services:
             DB_USERNAME: ${DB_USER}
         networks:
             - default
-            - auth_net
+            - caddy
         ports:
             - ${PORT}:2283
         restart: unless-stopped
@@ -82,5 +82,6 @@ networks:
         name: immich_network
         driver: overlay
         internal: true
-    auth_net:
+    caddy:
+        name: caddy_caddy
         external: true
