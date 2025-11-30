@@ -42,8 +42,6 @@ services:
     #ports:
      #- 3306:3306
     restart: unless-stopped
-    networks:
-      - default
 
 networks:
   default:
