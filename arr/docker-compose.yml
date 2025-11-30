@@ -259,6 +259,6 @@ networks:
   default:
     name: arr_network
     driver: overlay
-    internal: true
+    internal: false
   auth_net:
     external: true
