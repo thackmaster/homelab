@@ -14,9 +14,16 @@ services:
       - LDAP_BASE_DN=${LDAP_BASE_DN}
       - LDAP_SEARCH_FILTER=(uid=%s)
       - LDAP_INSECURE=true
+    networks:
+      - auth_net
     labels:
       caddy: ${APP_URL}
       caddy.reverse_proxy: "{{upstreams 3000}}"
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == manager
 
 networks:
   auth_net:

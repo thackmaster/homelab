@@ -18,6 +18,11 @@ services:
       caddy.forward_auth.copy_headers: "Remote-User Remote-Name Remote-Email Remote-Groups"
     networks:
       - auth_net
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == manager
 
 networks:
   tinyauth_net:

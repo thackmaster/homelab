@@ -13,6 +13,11 @@ services:
       - LLDAP_KEY_SEED=${SEED}
       - LLDAP_LDAP_BASE_DN=${BASE_DN}
       - LLDAP_LDAP_USER_PASS=${USER_PASS}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == manager
 
 networks:
   default:
