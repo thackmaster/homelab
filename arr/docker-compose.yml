@@ -184,7 +184,7 @@ services:
     container_name: qbittorrent
     image: lscr.io/linuxserver/qbittorrent:latest
     restart: unless-stopped
-    network_mode: "container:gluetun"
+    network_mode: "service:gluetun"
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -201,7 +201,7 @@ services:
     container_name: sabnzbd
     image: lscr.io/linuxserver/sabnzbd:latest
     restart: unless-stopped
-    network_mode: "container:gluetun"
+    network_mode: "service:gluetun"
     environment:
       - PUID=${UID}
       - PGID=${GID}
