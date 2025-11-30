@@ -22,8 +22,7 @@ services:
       - default
       - auth_net
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     labels:
       caddy: ${URL}
       caddy.reverse_proxy: "{{ upstreams 1337 }}"
