@@ -15,6 +15,7 @@ services:
       - LDAP_SEARCH_FILTER=(uid=%s)
       - LDAP_INSECURE=true
     networks:
+      - default
       - auth_net
       - caddy
     deploy:
@@ -28,9 +29,12 @@ services:
         caddy.tls: "internal"
 
 networks:
+  default:
+    name: tinyauth_net
+    driver: overlay
+    internal: true
   auth_net:
     external: true
   caddy:
     name: caddy_caddy
     external: true
-    
