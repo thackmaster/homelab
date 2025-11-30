@@ -20,9 +20,9 @@ services:
       - auth_net
     deploy:
       mode: global
-      #placement:
-        #constraints:
-          #- node.role == manager
+      placement:
+        constraints:
+          - node.role == manager
 
 networks:
   auth_net:
