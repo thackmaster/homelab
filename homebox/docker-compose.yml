@@ -15,11 +15,13 @@ services:
     volumes:
       - ${MNT}:/data
     networks:
-      - auth_net
-    labels:
-      caddy: ${URL}
-      caddy.reverse_proxy: "{{ upstreams 7745 }}"
+      - caddy
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams 7745 }}"
 
 networks:
-  auth_net:
+  caddy:
+    name: caddy_caddy
     external: true
