@@ -6,12 +6,10 @@ services:
       - 3890:3890
       - 17170:17170
     volumes:
-      - type: volume
-        source: lldap_data
-        target: /data
-        volume:
-          nocopy: true
+      - ${MNT}:/data
     environment:
+      - UID=${UID}
+      - GID=${GID}
       - TZ=America/Denver
       - LLDAP_JWT_SECRET=${SECRET}
       - LLDAP_KEY_SEED=${SEED}
@@ -22,14 +20,6 @@ services:
       placement:
         constraints:
           - node.role == manager
-
-volumes:
-  lldap_data:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=172.16.10.2,rw,nfsvers=4,soft,timeo=600
-      device: "${MNT}"
 
 networks:
   default:
