@@ -8,7 +8,7 @@ services:
             DB_USERNAME: ${DB_USER}
         networks:
             - default
-            - tinyauth_net
+            - auth_net
         ports:
             - ${PORT}:2283
         restart: unless-stopped
