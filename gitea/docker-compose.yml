@@ -13,8 +13,6 @@ services:
     restart: unless-stopped
     volumes:
       - ${MNT}:/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     labels:
       caddy: ${URL}
       caddy.reverse_proxy: "{{ upstreams 3000 }}"
