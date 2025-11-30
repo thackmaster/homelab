@@ -21,11 +21,11 @@ services:
         depends_on:
             - database
             - redis
-        cpu_shares: 90
         deploy:
             resources:
                 limits:
                     memory: "1g"
+                    cpus: '1'
         labels:
             caddy: ${URL}
             caddy.reverse_proxy: "{{ upstreams 2283 }}"
@@ -40,11 +40,11 @@ services:
         restart: unless-stopped
         volumes:
             - ${MNT}/model-cache:/cache
-        cpu_shares: 90
         deploy:
             resources:
                 limits:
                     memory: "1g"
+                    cpus: '1'
 
     database:
         container_name: immich-postgres
@@ -57,11 +57,11 @@ services:
         restart: unless-stopped
         volumes:
             - ${MNT}/postgres:/var/lib/postgresql/data
-        cpu_shares: 90
         deploy:
             resources:
                 limits:
                     memory: "512m"
+                    cpus: '1'
 
     redis:
         container_name: immich-redis
@@ -71,19 +71,16 @@ services:
             - ${MNT}/redis:/data
         healthcheck:
             test: redis-cli ping || exit 1
-        cpu_shares: 90
         deploy:
             resources:
                 limits:
                     memory: "512m"
+                    cpus: '1'
 
 networks:
     default:
         name: immich_network
+        driver: overlay
         internal: true
-        ipam:
-            config:
-                - subnet: 172.25.2.0/29
-                  gateway: 172.25.2.1
-    tinyauth_net:
+    auth_net:
         external: true
