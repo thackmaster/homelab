@@ -6,7 +6,7 @@ services:
       USER_GID: ${GID}
       USER_UID: ${UID}
     networks:
-      - auth_net
+      - caddy
     ports:
       - ${PORT}:3000
       - 222:22
