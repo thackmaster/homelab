@@ -48,6 +48,7 @@ services:
 networks:
   default:
     name: planka_network
+    driver: overlay
     external: false
   auth_net:
     external: true

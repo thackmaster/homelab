@@ -15,19 +15,11 @@ services:
     volumes:
       - ${MNT}:/data
     networks:
-      - default
-      - tinyauth_net
+      - auth_net
     labels:
       caddy: ${URL}
       caddy.reverse_proxy: "{{ upstreams 7745 }}"
 
 networks:
-  default:
-    name: homebox_net
-    internal: true
-    ipam:
-      config:
-        - subnet: 172.25.10.0/30
-          gateway: 172.25.10.1
-  tinyauth_net:
+  auth_net:
     external: true
