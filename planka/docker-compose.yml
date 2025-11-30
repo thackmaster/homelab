@@ -20,12 +20,13 @@ services:
       - ${MNT}/favicons:/app/public/favicons
     networks:
       - default
-      - auth_net
+      - caddy
     depends_on:
       - postgres
-    labels:
-      caddy: ${URL}
-      caddy.reverse_proxy: "{{ upstreams 1337 }}"
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams 1337 }}"
   
   postgres:
     container_name: planka-db
@@ -50,5 +51,6 @@ networks:
     name: planka_network
     driver: overlay
     external: false
-  auth_net:
+  caddy:
+    name: caddy_caddy
     external: true
