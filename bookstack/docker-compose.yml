@@ -23,6 +23,7 @@ services:
     restart: unless-stopped
     networks:
       - default
+      - caddy
       - auth_net
     labels:
       caddy: ${URL}
@@ -52,5 +53,7 @@ networks:
     name: bookstack_network
     driver: overlay
     internal: true
+  caddy:
+    external: true
   auth_net:
     external: true
