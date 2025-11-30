@@ -6,7 +6,7 @@ services:
       - 3890:3890
       - 17170:17170
     volumes:
-      - lldap_data:/data
+      - ${MNT}:/data
     environment:
       - TZ=America/Denver
       - LLDAP_JWT_SECRET=${SECRET}
@@ -14,15 +14,9 @@ services:
       - LLDAP_LDAP_BASE_DN=${BASE_DN}
       - LLDAP_LDAP_USER_PASS=${USER_PASS}
 
-volumes:
-  lldap_data:
-    external: false
-
 networks:
   default:
-    name: lldap_net
+    name: auth_net
+    driver: overlay
     external: false
-    ipam:
-      config:
-        - subnet: 172.20.1.0/30
-          gateway: 172.20.1.1
+    attachable: true

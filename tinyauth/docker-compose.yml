@@ -8,7 +8,7 @@ services:
     environment:
       - APP_URL=${APP_URL}
       - USERS=${USERS}
-      - LDAP_ADDRESS=ldap://172.16.10.6:3890
+      - LDAP_ADDRESS=ldap://lldap:3890
       - LDAP_BIND_DN=${LDAP_DN}
       - LDAP_BIND_PASSWORD=${LDAP_BIND_PASS}
       - LDAP_BASE_DN=${LDAP_BASE_DN}
@@ -19,10 +19,5 @@ services:
       caddy.reverse_proxy: "{{upstreams 3000}}"
 
 networks:
-    default:
-      name: tinyauth_net
-      external: false
-      ipam:
-        config:
-          - subnet: 172.20.11.0/28
-            gateway: 172.20.11.1
+  auth_net:
+    external: true
