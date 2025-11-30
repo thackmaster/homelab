@@ -1,7 +1,7 @@
 services:
 
   bazarr: #subtitles
-    hostname: bazarr.local
+    hostname: bazarr
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     environment:
@@ -91,6 +91,7 @@ services:
     restart: unless-stopped
 
   tautulli: #plex monitor
+    hostname: tautulli
     image: lscr.io/linuxserver/tautulli:latest
     container_name: tautulli
     environment:
@@ -179,7 +180,7 @@ services:
 ####################
   
   qbittorrent:
-    #hostname: qbittorrent
+    hostname: qbittorrent
     container_name: qbittorrent
     image: lscr.io/linuxserver/qbittorrent:latest
     restart: unless-stopped
@@ -196,7 +197,7 @@ services:
       - gluetun
 
   sabnzbd:
-    #hostname: sabnzbd
+    hostname: sabnzbd
     container_name: sabnzbd
     image: lscr.io/linuxserver/sabnzbd:latest
     restart: unless-stopped
