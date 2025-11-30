@@ -54,6 +54,7 @@ networks:
     driver: overlay
     internal: true
   caddy:
+    name: caddy_caddy
     external: true
   auth_net:
     external: true
