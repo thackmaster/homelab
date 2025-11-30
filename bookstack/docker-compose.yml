@@ -24,9 +24,10 @@ services:
     networks:
       - default
       - auth_net
-    labels:
-      caddy: ${URL}
-      caddy.reverse_proxy: "{{ upstreams 80 }}"
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams }}"
     
   mariadb:
     image: lscr.io/linuxserver/mariadb:latest
