@@ -29,6 +29,7 @@ services:
   mariadb:
     image: lscr.io/linuxserver/mariadb:latest
     container_name: bookstack-db
+    hostname: bookstack-db
     environment:
       - PUID=${UID}
       - PGID=${GID}
