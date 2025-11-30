@@ -13,10 +13,12 @@ services:
     restart: unless-stopped
     volumes:
       - ${MNT}:/data
-    labels:
-      caddy: ${URL}
-      caddy.reverse_proxy: "{{ upstreams 3000 }}"
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams 3000 }}"
 
 networks:
-  auth_net:
+  caddy:
+    name: caddy_caddy
     external: true
