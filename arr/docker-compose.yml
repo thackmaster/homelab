@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     networks:
       - default
-      - auth_net
+      - tinyauth_net
     labels:
       caddy: ${REQUEST_URL}
       caddy.reverse_proxy: "{{ upstreams 5055 }}"
@@ -91,7 +91,6 @@ services:
     restart: unless-stopped
 
   tautulli: #plex monitor
-    hostname: tautulli
     image: lscr.io/linuxserver/tautulli:latest
     container_name: tautulli
     environment:
@@ -194,7 +193,8 @@ services:
       - ${MNT_EXT_CONFIG}/qbittorrent:/config
       - ${MNT_MEDIA}/Downloads:/downloads
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
 
   sabnzbd:
     hostname: sabnzbd
@@ -210,7 +210,8 @@ services:
       - ${MNT_EXT_CONFIG}/sabnzbd:/config
       - ${MNT_MEDIA}/Downloads:/downloads
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
 
 #######
 # VPN #
@@ -258,7 +259,6 @@ services:
 networks:
   default:
     name: arr_network
-    driver: overlay
     internal: true
   auth_net:
     external: true
