@@ -27,8 +27,8 @@ volumes:
   lldap_data:
     driver: local
     driver_opts:
-      type: "nfs"
-      o: "addr=172.16.10.2,rw,nfsvers=4,soft,timeo=600"
+      type: nfs
+      o: addr=172.16.10.2,rw,nfsvers=4,soft,timeo=600
       device: ":${MNT}"
 
 networks:
