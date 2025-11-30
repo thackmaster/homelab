@@ -11,6 +11,7 @@ services:
       - ${MNT}:/data
     environment:
       - CADDY_INGRESS_NETWORK=auth_net
+      - DOCKER_API_VERSION=1.37
     labels:
       caddy: (tinyauth_forwarder)
       caddy.forward_auth: tinyauth:3000
