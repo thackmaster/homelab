@@ -49,6 +49,6 @@ networks:
   default:
     name: bookstack_network
     driver: overlay
-    external: false
+    internal: true
   auth_net:
     external: true
