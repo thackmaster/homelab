@@ -17,15 +17,16 @@ services:
     networks:
       - auth_net
       - caddy
-    labels:
-      caddy: ${APP_URL}
-      caddy.reverse_proxy: "{{upstreams 3000}}"
-      caddy.tls: "internal"
+    
     deploy:
       mode: replicated
       placement:
         constraints:
           - node.role == manager
+      labels:
+        caddy: ${APP_URL}
+        caddy.reverse_proxy: "{{upstreams 3000}}"
+        caddy.tls: "internal"
 
 networks:
   auth_net:
