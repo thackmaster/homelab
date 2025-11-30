@@ -27,24 +27,24 @@ services:
     volumes:
       - ${MNT_EXT_CONFIG}/kometa:/config:rw
 
-  overseerr: #requests
-    image: sctx/overseerr:latest
-    container_name: overseerr
-    environment:
-      - LOG_LEVEL=debug
-      - TZ=${TZ}
-      #- PORT=5055 #optional
-    ports:
-      - ${OVERSEERR_PORT}:5055
-    volumes:
-      - ${MNT_EXT_CONFIG}/overseerr:/app/config
-    restart: unless-stopped
-    networks:
-      - default
-      - auth_net
-    labels:
-      caddy: ${REQUEST_URL}
-      caddy.reverse_proxy: "{{ upstreams 5055 }}"
+  #overseerr: #requests
+    #image: sctx/overseerr:latest
+    #container_name: overseerr
+    #environment:
+      #- LOG_LEVEL=debug
+      #- TZ=${TZ}
+      ##- PORT=5055 #optional
+    #ports:
+      #- ${OVERSEERR_PORT}:5055
+    #volumes:
+      #- ${MNT_EXT_CONFIG}/overseerr:/app/config
+    #restart: unless-stopped
+    #networks:
+      #- default
+      #- auth_net
+    #labels:
+      #caddy: ${REQUEST_URL}
+      #caddy.reverse_proxy: "{{ upstreams 5055 }}"
   
   prowlarr: #overview management
     hostname: prowlarr
