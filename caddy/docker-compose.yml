@@ -35,7 +35,14 @@ services:
       - CADDY_DOCKER_MODE=controller
       - CADDY_CONTROLLER_NETWORK=10.200.0.0/24
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock 
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+          
 
 networks:
   caddy:
