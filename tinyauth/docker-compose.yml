@@ -16,9 +16,11 @@ services:
       - LDAP_INSECURE=true
     networks:
       - auth_net
+      - caddy
     labels:
       caddy: ${APP_URL}
       caddy.reverse_proxy: "{{upstreams 3000}}"
+      caddy.tls: "internal"
     deploy:
       mode: replicated
       placement:
@@ -28,3 +30,7 @@ services:
 networks:
   auth_net:
     external: true
+  caddy:
+    name: caddy_caddy
+    external: true
+    
