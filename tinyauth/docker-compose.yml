@@ -17,7 +17,6 @@ services:
     networks:
       - auth_net
       - caddy
-    
     deploy:
       mode: replicated
       placement:
