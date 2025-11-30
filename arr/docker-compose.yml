@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     networks:
       - default
-      - tinyauth_net
+      - auth_net
     labels:
       caddy: ${REQUEST_URL}
       caddy.reverse_proxy: "{{ upstreams 5055 }}"
@@ -257,6 +257,7 @@ services:
 networks:
   default:
     name: arr_network
+    driver: overlay
     internal: true
   auth_net:
     external: true
