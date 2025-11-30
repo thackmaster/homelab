@@ -25,5 +25,5 @@ services:
           - node.role == manager
 
 networks:
-  tinyauth_net:
+  auth_net:
     external: true
