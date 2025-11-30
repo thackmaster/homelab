@@ -19,10 +19,7 @@ services:
     networks:
       - auth_net
     deploy:
-      mode: replicated
-      placement:
-        constraints:
-          - node.role == manager
+      mode: global
 
 networks:
   auth_net:
