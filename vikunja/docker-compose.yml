@@ -17,12 +17,11 @@ services:
     volumes:
       - ${MNT}/data:/app/vikunja/files
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     restart: unless-stopped
     networks:
       - default
-      - tinyauth_net
+      - auth_net
     labels:
       caddy: ${URL}
       caddy.reverse_proxy: "{{ upstreams 3456 }}"
@@ -44,10 +43,7 @@ services:
 networks:
   default:
     name: vikunja_network
+    driver: overlay
     internal: true
-    ipam:
-      config:
-        - subnet: 172.25.9.0/29
-          gateway: 172.25.9.1
-  tinyauth_net:
+  auth_net:
     external: true
