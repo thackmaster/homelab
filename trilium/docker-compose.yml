@@ -12,8 +12,7 @@ services:
     volumes:
       - ${MNT}:/home/node/trilium-data
     networks:
-      - default
-      - tinyauth_net
+      - auth_net
     labels:
       caddy: ${URL}
       caddy.reverse_proxy: "{{ upstreams 8080 }}"
@@ -22,12 +21,5 @@ services:
       caddy.forward_auth.uri: /api/auth/caddy
 
 networks:
-  default:
-    name: trilium_net
-    internal: true
-    ipam:
-      config:
-        - subnet: 172.20.2.0/30
-          gateway: 172.20.2.1
-  tinyauth_net:
+  auth_net:
     external: true
