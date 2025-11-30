@@ -6,8 +6,7 @@ services:
       USER_GID: ${GID}
       USER_UID: ${UID}
     networks:
-      - default
-      - tinyauth_net
+      - auth_net
     ports:
       - ${PORT}:3000
       - 222:22
@@ -21,12 +20,5 @@ services:
       caddy.reverse_proxy: "{{ upstreams 3000 }}"
 
 networks:
-  default:
-    name: gitea_net
-    internal: true
-    ipam:
-      config:
-        - subnet: 172.25.12.0/30
-          gateway: 172.25.12.1
-  tinyauth_net:
+  auth_net:
     external: true
