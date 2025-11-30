@@ -2,6 +2,8 @@ services:
   bookstack:
     image: lscr.io/linuxserver/bookstack:latest
     container_name: bookstack
+    depends_on:
+      - mariadb
     environment:
       - PUID=${UID}
       - PGID=${GID}
