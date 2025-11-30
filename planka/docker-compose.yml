@@ -20,7 +20,7 @@ services:
       - ${MNT}/favicons:/app/public/favicons
     networks:
       - default
-      - tinyauth_net
+      - auth_net
     depends_on:
       postgres:
         condition: service_healthy
@@ -30,6 +30,7 @@ services:
   
   postgres:
     container_name: planka-db
+    hostname: planka-db
     image: postgres:16-alpine
     restart: unless-stopped
     volumes:
@@ -48,10 +49,6 @@ services:
 networks:
   default:
     name: planka_network
-    internal: true
-    ipam:
-      config:
-        - subnet: 172.25.5.0/29
-          gateway: 172.25.5.1
-  tinyauth_net:
+    external: false
+  auth_net:
     external: true
