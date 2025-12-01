@@ -36,6 +36,8 @@ services:
     environment:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_USER: ${DB_USER}
+    networks:
+      - vikunja_network
     volumes:
       - ${MNT}/db:/var/lib/postgresql/data
     restart: unless-stopped
