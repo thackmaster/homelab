@@ -12,6 +12,9 @@ services:
       #- /var/run/postgresql
     volumes:
       - ${MNT}/db:/var/lib/postgresql/data
+    networks:
+      - default
+      - caddy
     environment:
       - TZ=${TZ}
       - POSTGRES_USER=${DB_USER}
@@ -44,12 +47,22 @@ services:
       - MM_BLEVESETTINGS_INDEXDIR=/mattermost/bleve-indexes
     ports:
       - 8065:8065
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams 8065 }}"
+        caddy.tls: "internal"
 
 networks:
   default:
       name: mattermost_network
-      external: false
+      driver: overlay
+      internal: true
       ipam:
           config:
             - subnet: 172.25.8.0/29
-              gateway: 172.25.8.1
+  caddy:
+      name: caddy_caddy
+      external: true
+  auth_net:
+      external: true
