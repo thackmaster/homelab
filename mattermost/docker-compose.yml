@@ -16,6 +16,7 @@ services:
     networks:
       - default
       - caddy
+      - auth_net
     environment:
       - TZ=${TZ}
       - POSTGRES_USER=${DB_USER}
