@@ -56,14 +56,14 @@ services:
 
 networks:
   default:
-      name: mattermost_network
-      driver: overlay
-      internal: true
-      ipam:
-          config:
-            - subnet: 172.25.8.0/29
+    name: mattermost_network
+    driver: overlay
+    internal: true
+    ipam:
+      config:
+      - subnet: 172.25.8.0/29
   caddy:
-      name: caddy_caddy
-      external: true
+    name: caddy_caddy
+    external: true
   auth_net:
-      external: true
+    external: true
