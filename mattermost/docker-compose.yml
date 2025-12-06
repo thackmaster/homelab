@@ -1,6 +1,7 @@
 services:
   postgres:
     container_name: mattermost-db
+    hostname: mattermost-db
     image: postgres:16-alpine
     restart: unless-stopped
     #security_opt:
