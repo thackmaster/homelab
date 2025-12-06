@@ -13,10 +13,6 @@ services:
       #- /var/run/postgresql
     volumes:
       - ${MNT}/db:/var/lib/postgresql/data
-    networks:
-      - default
-      - caddy
-      - auth_net
     environment:
       - TZ=${TZ}
       - POSTGRES_USER=${DB_USER}
@@ -29,6 +25,10 @@ services:
       - postgres
     image: mattermost/mattermost-team-edition:release-10.11
     restart: unless-stopped
+    networks:
+      - default
+      - caddy
+      - auth_net
     #security_opt:
       #- no-new-privileges:true
     #pids_limit: 200
