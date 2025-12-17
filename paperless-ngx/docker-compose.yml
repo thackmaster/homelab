@@ -33,7 +33,7 @@ services:
             - PAPERLESS_DBUSER=${DB_USER}
             - PAPERLESS_DBPASS=${DB_PASS}
             - PAPERLESS_REDIS=redis://paperless-ngx_broker:6379
-            - PAPERLESS_TIME_ZONE=US/Mountain
+            - PAPERLESS_TIME_ZONE=America/Denver
             - PAPERLESS_ADMIN_USER=${ADMIN_USER}
             - PAPERLESS_ADMIN_PASSWORD=${ADMIN_PASS}
             - PAPERLESS_OCR_LANGUAGE=eng
