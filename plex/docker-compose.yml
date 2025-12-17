@@ -11,7 +11,7 @@ services:
       - VERSION=latest
       - PLEX_CLAIM=${PLEX_CLAIM}
     volumes:
-      - /home/plex:/config
-      - ${MNT}:/media
-      - ${MNT_BACKUP}:/backup
+      - ${MNT}:/config
+      - ${MNT_MEDIA}:/media
+      - ${MNT}/backup:/backup
     network_mode: host
