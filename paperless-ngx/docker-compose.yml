@@ -47,6 +47,11 @@ services:
         networks:
             - default
             - caddy
+        deploy:
+            labels:
+                caddy: ${URL}
+                caddy.reverse_proxy: "{{ upstreams 8000 }}"
+                caddy.tls: "internal"
 
 networks:
     default:
