@@ -53,9 +53,6 @@ networks:
         name: paperless-ngx_network
         internal: true
         driver: overlay
-        ipam:
-            config:
-                - subnet: 172.25.4.0/29
     caddy:
         name: caddy_caddy
         external: true
