@@ -51,10 +51,12 @@ services:
             - paperless-ngx_network
 
 networks:
-    paperless-ngx_network:
+    default:
         name: paperless-ngx_network
-        external: false
+        internal: true
         ipam:
             config:
                 - subnet: 172.25.4.0/29
-                  gateway: 172.25.4.1
+    caddy:
+        name: caddy_caddy
+        external: true
