@@ -52,6 +52,7 @@ networks:
     default:
         name: paperless-ngx_network
         internal: true
+        driver: overlay
         ipam:
             config:
                 - subnet: 172.25.4.0/29
