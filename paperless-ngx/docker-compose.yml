@@ -44,20 +44,9 @@ services:
             - ${MNT}/media:/usr/src/paperless/media
             - ${MNT}/export:/usr/src/paperless/export
             - ${MNT}/consume:/usr/src/paperless/consume
-        networks:
-            - default
-            - caddy
-        deploy:
-            labels:
-                caddy: ${URL}
-                caddy.reverse_proxy: "{{ upstreams 8000 }}"
-                caddy.tls: "internal"
 
 networks:
     default:
         name: paperless-ngx_network
         internal: true
         driver: overlay
-    caddy:
-        name: caddy_caddy
-        external: true
