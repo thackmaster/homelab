@@ -11,7 +11,7 @@ services:
         image: docker.io/library/postgres:18
         restart: unless-stopped
         volumes:
-            - ${MNT}/db:/var/lib/postgresql/data
+            - ${MNT}/db:/var/lib/postgresql
         environment:
             POSTGRES_DB: ${DB_NAME}
             POSTGRES_USER: ${DB_USER}
