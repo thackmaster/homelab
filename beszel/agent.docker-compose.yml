@@ -9,3 +9,6 @@ services:
     environment:
       LISTEN: ${LISTEN}
       KEY: '${KEY}'
+    hostname: "{{.Node.Hostname}}"
+    deploy:
+      mode: global
