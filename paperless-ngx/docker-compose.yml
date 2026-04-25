@@ -5,9 +5,10 @@ services:
         restart: unless-stopped
         volumes:
             - ${MNT}/broker:/data
+
     db:
         container_name: paperless-ngx_db
-        image: docker.io/library/postgres:17
+        image: docker.io/library/postgres:18
         restart: unless-stopped
         volumes:
             - ${MNT}/db:/var/lib/postgresql/data
@@ -38,15 +39,25 @@ services:
             - PAPERLESS_ADMIN_PASSWORD=${ADMIN_PASS}
             - PAPERLESS_OCR_LANGUAGE=eng
             - PAPERLESS_FILENAME_FORMAT=${FILENAME_FORMAT}
-            - PAPERLESS_URL=${URL}
+            - PAPERLESS_URL=https://${URL}
         volumes:
             - ${MNT}/data:/usr/src/paperless/data
             - ${MNT}/media:/usr/src/paperless/media
             - ${MNT}/export:/usr/src/paperless/export
             - ${MNT}/consume:/usr/src/paperless/consume
+        networks:
+            - default
+            - caddy
+        deploy:
+            labels:
+                caddy: ${URL}
+                caddy.reverse_proxy: "{{ upstreams 8000 }}"
 
 networks:
     default:
         name: paperless-ngx_network
         internal: true
         driver: overlay
+    caddy:
+        name: caddy_caddy
+        external: true
