@@ -1,0 +1,17 @@
+services:
+  it-tools:
+    image: corentinth/it-tools:latest
+    container_name: it-tools
+    restart: unless-stopped
+    networks:
+      - ittools_net
+      - tinyauth_net
+    labels:
+      caddy: ${URL}
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy.import: tinyauth_forwarder *
+
+networks:
+  ittools_net:
+  auth_net:
+    external: true
