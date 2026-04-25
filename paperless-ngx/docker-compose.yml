@@ -40,7 +40,7 @@ services:
             - PAPERLESS_OCR_LANGUAGE=eng
             - PAPERLESS_FILENAME_FORMAT=${FILENAME_FORMAT}
             - PAPERLESS_URL=https://${URL}
-            - PAPERLESS_CORS_ALLOWED_ORIGINS=https://${URL}
+            - PAPERLESS_CORS_ALLOWED_ORIGINS=${URL}
         volumes:
             - ${MNT}/data:/usr/src/paperless/data
             - ${MNT}/media:/usr/src/paperless/media
