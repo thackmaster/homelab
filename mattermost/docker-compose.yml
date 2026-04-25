@@ -60,9 +60,6 @@ networks:
     name: mattermost_network
     driver: overlay
     internal: true
-    ipam:
-      config:
-      - subnet: 172.25.8.0/29
   caddy:
     name: caddy_caddy
     external: true
