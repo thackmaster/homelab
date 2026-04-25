@@ -1,6 +1,7 @@
 services:
     broker:
         container_name: paperless-ngx_broker
+        hostname: paperless-ngx_broker
         image: docker.io/library/redis:8
         restart: unless-stopped
         volumes:
@@ -8,6 +9,7 @@ services:
 
     db:
         container_name: paperless-ngx_db
+        hostname: paperless-ngx_db
         image: docker.io/library/postgres:18
         restart: unless-stopped
         volumes:
@@ -24,8 +26,6 @@ services:
         depends_on:
             - db
             - broker
-        ports:
-            - ${PORT}:8000
         environment:
             - USERMAP_UID=${UID}
             - USERMAP_GID=${GID}
@@ -40,7 +40,7 @@ services:
             - PAPERLESS_OCR_LANGUAGE=eng
             - PAPERLESS_FILENAME_FORMAT=${FILENAME_FORMAT}
             - PAPERLESS_URL=https://${URL}
-            - PAPERLESS_CORS_ALLOWED_ORIGINS=${URL}
+            - PAPERLESS_CORS_ALLOWED_ORIGINS=https://${URL}
         volumes:
             - ${MNT}/data:/usr/src/paperless/data
             - ${MNT}/media:/usr/src/paperless/media
