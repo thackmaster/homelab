@@ -6,47 +6,44 @@ services:
       - db
       - redis
     environment:
-      APP_URL: "${APP_URL}"
+      APP_URL: "${APP_URL}" #"http://localhost:3000"
       APP_SECRET: "${APP_SECRET}"
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/docmost?schema=public"
-      REDIS_URL: "redis://docmost-redis:6379"
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@postgres:5432/docmost?schema=public"
+      REDIS_URL: "redis://redis:6379"
     ports:
-      - "32000:3000"
+      - "3000:3000"
     restart: unless-stopped
     volumes:
-      #- ${MNT}:/app/data/storage
-      - docmost:/app/data/storage
+      - ${MNT}:/app/data/storage
     #labels:
       #caddy: ${APP_URL}
       #caddy.reverse_proxy: "{{ upstreams 3000 }}"
       #caddy.reverse_proxy.header_up_0: "Connection {>Connection}"
       #caddy.reverse_proxy.header_up_1: "Upgrade {>Upgrade}"
-    networks:
-      - default
-      - tinyauth_net
+    #networks:
+      #- default
+      #- tinyauth_net
 
   db:
     container_name: docmost-db
-    image: postgres:16-alpine
+    hostname: postgres
+    image: postgres:18
     environment:
       POSTGRES_DB: docmost
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     restart: unless-stopped
     volumes:
-      - ${MNT}/db:/var/lib/postgresql/data
+      - ${MNT}/db:/var/lib/postgresql
 
   redis:
     container_name: docmost-redis
-    hostname: docmost-redis
-    image: redis:7.2-alpine
+    hostname: redis
+    image: redis:8
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
     restart: unless-stopped
     volumes:
       - ${MNT}/redis:/data
-
-volumes:
-  docmost:
-    name: docmost
 
 networks:
   default:
@@ -54,7 +51,7 @@ networks:
     name: docmost_network
     ipam:
       config:
-        - subnet: 172.25.6.0/29
-          gateway: 172.25.6.1
-  tinyauth_net:
-    external: true
+       - subnet: 172.25.6.0/29
+         gateway: 172.25.6.1
+  #tinyauth_net:
+    #external: true
