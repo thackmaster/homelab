@@ -10,7 +10,7 @@ services:
       - "LOG_LEVEL=info"
       - "LOG_JSON=false"
       # CONFIGS
-      - "DIUN_DEFAULTS_NOTIFYON=update"
+      - "DIUN_DEFAULTS_NOTIFYON=new,update"
       - "DIUN_WATCH_WORKERS=20"
       - "DIUN_WATCH_SCHEDULE=${SCHEDULE}"
       - "DIUN_WATCH_JITTER=30s"
