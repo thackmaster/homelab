@@ -1,0 +1,25 @@
+services:
+  seerr: #requests
+    image: ghcr.io/seerr-team/seerr:latest
+    container_name: seerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+      #- PORT=5055 #optional
+    ports:
+      - ${SEERR_PORT}:5055
+    volumes:
+      - ${MNT_EXT_CONFIG}/seerr:/app/config
+    restart: unless-stopped
+    networks:
+      #- arr_network
+      - caddy
+    deploy:
+      labels:
+        caddy: ${REQUEST_URL}
+        caddy.reverse_proxy: "{{ upstreams 5055 }}"
+
+networks:
+  caddy:
+    name: caddy_caddy
+    external: true
