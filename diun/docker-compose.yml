@@ -1,0 +1,29 @@
+services:
+  diun:
+    image: crazymax/diun:latest
+    command: serve
+    volumes:
+      - ${MNT}:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - "TZ=${TZ}"
+      - "LOG_LEVEL=info"
+      - "LOG_JSON=false"
+      # CONFIGS
+      - "DIUN_DEFAULTS_NOTIFYON=update"
+      - "DIUN_WATCH_WORKERS=20"
+      - "DIUN_WATCH_SCHEDULE=${SCHEDULE}"
+      - "DIUN_WATCH_JITTER=30s"
+      - "DIUN_WATCH_RUNONSTARTUP=true"
+      - "DIUN_WATCH_FIRSTCHECKNOTIF=true"
+      - "DIUN_PROVIDERS_SWARM=true"
+      - "DIUN_PROVIDERS_SWARM_WATCHBYDEFAULT=true"
+      - "DIUN_PROVIDERS_DOCKER=true"
+      # NOTIFS
+      - "DIUN_NOTIF_SLACK_WEBHOOKURL=${URL}"
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == manager
+          - node.platform.arch != aarch64
