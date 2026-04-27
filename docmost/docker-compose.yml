@@ -15,11 +15,11 @@ services:
     restart: unless-stopped
     volumes:
       - ${MNT}:/app/data/storage
-    #labels:
-      #caddy: ${APP_URL}
-      #caddy.reverse_proxy: "{{ upstreams 3000 }}"
-      #caddy.reverse_proxy.header_up_0: "Connection {>Connection}"
-      #caddy.reverse_proxy.header_up_1: "Upgrade {>Upgrade}"
+    labels:
+      caddy: ${APP_URL}
+      caddy.reverse_proxy: "{{ upstreams 3000 }}"
+      caddy.reverse_proxy.header_up_0: "Connection {>Connection}"
+      caddy.reverse_proxy.header_up_1: "Upgrade {>Upgrade}"
     #networks:
       #- default
       #- tinyauth_net
