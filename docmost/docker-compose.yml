@@ -49,9 +49,9 @@ networks:
   default:
     internal: true
     name: docmost_network
-    ipam:
-      config:
-       - subnet: 172.25.6.0/29
-         gateway: 172.25.6.1
+    #ipam:
+      #config:
+       #- subnet: 172.25.6.0/29
+         #gateway: 172.25.6.1
   #tinyauth_net:
     #external: true
