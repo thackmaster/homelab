@@ -11,7 +11,7 @@ services:
       DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@postgres:5432/docmost?schema=public"
       REDIS_URL: "redis://redis:6379"
     ports:
-      - "3000:3000"
+      - "${PORT}:3000"
     restart: unless-stopped
     volumes:
       - ${MNT}:/app/data/storage
