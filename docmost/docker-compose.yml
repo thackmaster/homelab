@@ -20,9 +20,9 @@ services:
       caddy.reverse_proxy: "{{ upstreams 3000 }}"
       caddy.reverse_proxy.header_up_0: "Connection {>Connection}"
       caddy.reverse_proxy.header_up_1: "Upgrade {>Upgrade}"
-    #networks:
-      #- default
-      #- tinyauth_net
+    networks:
+      - default
+      - caddy
 
   db:
     container_name: docmost-db
@@ -50,6 +50,9 @@ networks:
   default:
     internal: true
     name: docmost_network
+  caddy:
+    name: caddy_caddy
+    external: true
     #ipam:
       #config:
        #- subnet: 172.25.6.0/29
