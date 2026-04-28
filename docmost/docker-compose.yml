@@ -10,16 +10,12 @@ services:
       APP_SECRET: "${APP_SECRET}"
       DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@postgres:5432/docmost?schema=public"
       REDIS_URL: "redis://redis:6379"
-    ports:
-      - "${PORT}:3000"
     restart: unless-stopped
     volumes:
       - ${MNT}:/app/data/storage
     labels:
       caddy: ${APP_URL}
       caddy.reverse_proxy: "{{ upstreams 3000 }}"
-      caddy.reverse_proxy.header_up_0: "Connection {>Connection}"
-      caddy.reverse_proxy.header_up_1: "Upgrade {>Upgrade}"
     networks:
       - default
       - caddy
