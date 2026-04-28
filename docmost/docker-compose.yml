@@ -6,7 +6,7 @@ services:
       - db
       - redis
     environment:
-      APP_URL: "${APP_URL}" #"http://localhost:3000"
+      APP_URL: "https://${APP_URL}" #"http://localhost:3000"
       APP_SECRET: "${APP_SECRET}"
       DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@postgres:5432/docmost?schema=public"
       REDIS_URL: "redis://redis:6379"
