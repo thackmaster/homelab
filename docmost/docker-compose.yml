@@ -28,6 +28,7 @@ services:
     container_name: docmost-db
     hostname: postgres
     image: postgres:18
+    user: "${UID}:${GID}"
     environment:
       POSTGRES_DB: docmost
       POSTGRES_USER: ${DB_USER}
