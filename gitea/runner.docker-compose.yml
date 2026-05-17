@@ -1,0 +1,23 @@
+services:
+  gitea-runner:
+    image: gitea/runner:latest
+    container_name: gitea-runner
+    depends_on:
+      - gitea
+    networks:
+      - gitea
+    volumes:
+      - ${MNT}/runner/token.txt:/token.txt
+      #- ${MNT}/runner/config.yml:/config.yml
+      - ${MNT}/runner/data:/data
+      - ${MNT}/runner/data/cache:/root/.cache
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - GITEA_INSTANCE_URL=http://gitea:3000
+      - GITEA_RUNNER_REGISTRATION_TOKEN_FILE=/token.txt
+      #- CONFIG_FILE=/config.yml
+    restart: on-failure
+
+networks:
+  gitea:
+    external: true
