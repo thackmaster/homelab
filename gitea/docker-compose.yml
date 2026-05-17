@@ -5,20 +5,45 @@ services:
     environment:
       USER_GID: ${GID}
       USER_UID: ${UID}
-    networks:
-      - caddy
+      GITEA__database__DB_TYPE: postgres
+      GITEA__database__HOST: db:5432
+      GITEA__database__NAME: ${DB_NAME}
+      GITEA__database__USER: ${DB_USER}
+      GITEA__database__PASSWD: ${DB_PASS}
     ports:
       - ${PORT}:3000
       - 222:22
     restart: unless-stopped
     volumes:
       - ${MNT}:/data
+    networks:
+      - caddy
+      - gitea
+      - auth_net
+    depends_on:
+      - db
     deploy:
       labels:
         caddy: ${URL}
         caddy.reverse_proxy: "{{ upstreams 3000 }}"
 
+  db:
+    image: docker.io/library/postgres:18
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - gitea
+    volumes:
+      - ${MNT}/db:/var/lib/postgresql
+
 networks:
+  gitea:
+    internal: true
+  auth_net:
+    external: true
   caddy:
     name: caddy_caddy
     external: true
