@@ -20,4 +20,5 @@ services:
 
 networks:
   gitea:
+    name: gitea_gitea
     external: true
