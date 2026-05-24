@@ -50,5 +50,5 @@ services:
 
 networks:
   default:
-    name: diun-net
+    name: diun_net
     driver: overlay

@@ -57,11 +57,11 @@ services:
 
 networks:
   default:
-    name: mattermost_network
+    name: mattermost_net
     driver: overlay
     internal: true
   caddy:
-    name: caddy_caddy
+    name: caddy
     external: true
   auth_net:
     external: true

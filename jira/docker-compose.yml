@@ -24,4 +24,4 @@ volumes:
 
 networks:
     default:
-        name: jira_network
+        name: jira_net

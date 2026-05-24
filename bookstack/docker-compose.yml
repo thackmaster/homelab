@@ -51,11 +51,11 @@ services:
 
 networks:
   default:
-    name: bookstack_network
+    name: bookstack_net
     driver: overlay
     internal: true
   caddy:
-    name: caddy_caddy
+    name: caddy
     external: true
   auth_net:
     external: true

@@ -48,9 +48,9 @@ services:
 
 networks:
   default:
-    name: planka_network
+    name: planka_net
     driver: overlay
     external: false
   caddy:
-    name: caddy_caddy
+    name: caddy
     external: true

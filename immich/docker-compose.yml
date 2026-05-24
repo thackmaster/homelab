@@ -79,9 +79,9 @@ services:
 
 networks:
     default:
-        name: immich_network
+        name: immich_net
         driver: overlay
         internal: true
     caddy:
-        name: caddy_caddy
+        name: caddy
         external: true

@@ -56,9 +56,9 @@ services:
 
 networks:
     default:
-        name: paperless-ngx_network
+        name: paperless-ngx_net
         internal: true
         driver: overlay
     caddy:
-        name: caddy_caddy
+        name: caddy
         external: true

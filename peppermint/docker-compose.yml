@@ -21,10 +21,10 @@ services:
       API_URL: ${API_URL} #EX. http://ip-address:port
     networks:
       - exposed_services
-      - postgres_network
+      - postgres_net
 
 networks:
   exposed_services:
     external: true
-  postgres_network:
+  postgres_net:
     external: true

@@ -55,11 +55,11 @@ services:
 
 networks:
   default:
-    name: vikunja_network
+    name: vikunja_net
     driver: overlay
     internal: true
   caddy:
-    name: caddy_caddy
+    name: caddy
     external: true
   auth_net:
     external: true

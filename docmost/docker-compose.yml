@@ -45,9 +45,10 @@ services:
 networks:
   default:
     internal: true
-    name: docmost_network
+    driver: overlay
+    name: docmost_net
   caddy:
-    name: caddy_caddy
+    name: caddy
     external: true
     #ipam:
       #config:

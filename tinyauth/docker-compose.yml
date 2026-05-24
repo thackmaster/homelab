@@ -36,5 +36,5 @@ networks:
   auth_net:
     external: true
   caddy:
-    name: caddy_caddy
+    name: caddy
     external: true
