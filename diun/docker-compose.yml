@@ -1,15 +1,38 @@
 services:
-  diun:
+  node-watcher:
     image: crazymax/diun:latest
     command: serve
+    hostname: "{{.Node.Hostname}}"
+    networks:
+      - default
     volumes:
-      - ${MNT}:/data
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - "TZ=${TZ}"
       - "LOG_LEVEL=info"
-      - "LOG_JSON=false"
-      # CONFIGS
+      - "DIUN_DEFAULTS_NOTIFYON=new,update"
+      - "DIUN_WATCH_WORKERS=20"
+      - "DIUN_WATCH_SCHEDULE=${SCHEDULE}"
+      - "DIUN_WATCH_JITTER=30s"
+      - "DIUN_WATCH_RUNONSTARTUP=true"
+      - "DIUN_WATCH_FIRSTCHECKNOTIF=true"
+      - "DIUN_PROVIDERS_DOCKER=true"
+      - "DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true"
+    deploy:
+      mode: global
+
+  swarm-watcher:
+    image: crazymax/diun:latest
+    command: serve
+    hostname: "{{.Node.Hostname}}"
+    networks:
+      - default
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${MNT}:/data
+    environment:
+      - "TZ=${TZ}"
+      - "LOG_LEVEL=info"
       - "DIUN_DEFAULTS_NOTIFYON=new,update"
       - "DIUN_WATCH_WORKERS=20"
       - "DIUN_WATCH_SCHEDULE=${SCHEDULE}"
@@ -18,12 +41,14 @@ services:
       - "DIUN_WATCH_FIRSTCHECKNOTIF=true"
       - "DIUN_PROVIDERS_SWARM=true"
       - "DIUN_PROVIDERS_SWARM_WATCHBYDEFAULT=true"
-      - "DIUN_PROVIDERS_DOCKER=true"
-      # NOTIFS
+      - "DIUN_PROVIDERS_DOCKER=false"
       - "DIUN_NOTIF_SLACK_WEBHOOKURL=${URL}"
     deploy:
-      mode: replicated
+      replicas: 1
       placement:
-        constraints:
-          - node.role == manager
-          - node.platform.arch != aarch64
+        constraints: [node.role == manager]
+
+networks:
+  default:
+    name: diun-net
+    driver: overlay
