@@ -23,7 +23,7 @@ services:
     container_name: mattermost
     depends_on:
       - postgres
-    image: mattermost/mattermost-team-edition:release-11.7
+    image: mattermost/mattermost-team-edition:release-10.11
     restart: unless-stopped
     networks:
       - default
