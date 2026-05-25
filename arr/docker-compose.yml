@@ -99,7 +99,7 @@ services:
       - PGID=${GID}
       - TZ=${TZ}
     volumes:
-      - ${MNT_CONFIG}/sonarr:/config:rw
+      - ${MNT_CONFIG}/sonarr:/config
       - nfs-media:/media
       - type: volume
         source: nfs-backups
