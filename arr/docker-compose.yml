@@ -3,17 +3,26 @@ services:
   bazarr: #subtitles
     hostname: bazarr
     image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
     environment:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
     volumes:
-      - ${MNT_CONFIG}/bazarr:/config:rw
-      - ${MNT_MEDIA}:/media:rw
+      - ${MNT_CONFIG}/bazarr:/config
+      - nfs-media:/media
+      - type: volume
+        source: nfs-backups
+        target: /config/backup
+        volume:
+          nocopy: true
+          subpath: bazarr
     ports:
-      - ${BAZARR_PORT}:6767
+      - ${BAZARR_PORT:-6767}:6767
     restart: unless-stopped
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${NODE}
   
   kometa:
     container_name: kometa
@@ -25,21 +34,36 @@ services:
       - KOMETA_RUN=${KOMETA_RUN} #run immediately
       - KOMETA_TIMES=05:00|17:00
     volumes:
-      - ${MNT_EXT_CONFIG}/kometa:/config:rw
+      - type: volume
+        source: nfs-ext-config
+        target: /config
+        volume:
+          nocopy: true
+          subpath: kometa
   
   prowlarr: #overview management
     hostname: prowlarr
     image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
     environment:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
     volumes:
-      - ${MNT_CONFIG}/prowlarr:/config:rw
+      - ${MNT_CONFIG}/prowlarr:/config
+      - nfs-media:/media
+      - type: volume
+        source: nfs-backups
+        target: /config/Backups
+        volume:
+          nocopy: true
+          subpath: prowlarr
     ports:
-      - ${PROWLARR_PORT}:9696
+      - ${PROWLARR_PORT:-9696}:9696
     restart: unless-stopped
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${NODE}
   
   radarr: #movies
     hostname: radarr
@@ -50,11 +74,21 @@ services:
       - PGID=${GID}
       - TZ=${TZ}
     volumes:
-      - ${MNT_CONFIG}/radarr:/config:rw
-      - ${MNT_MEDIA}:/media:rw
+      - ${MNT_CONFIG}/radarr:/config
+      - nfs-media:/media
+      - type: volume
+        source: nfs-backups
+        target: /config/Backups
+        volume:
+          nocopy: true
+          subpath: radarr
     ports:
-      - ${RADARR_PORT}:7878
+      - ${RADARR_PORT:-7878}:7878
     restart: unless-stopped
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${NODE}
   
   sonarr: #tv shows
     hostname: sonarr
@@ -66,10 +100,20 @@ services:
       - TZ=${TZ}
     volumes:
       - ${MNT_CONFIG}/sonarr:/config:rw
-      - ${MNT_MEDIA}:/media:rw
+      - nfs-media:/media
+      - type: volume
+        source: nfs-backups
+        target: /config/Backups
+        volume:
+          nocopy: true
+          subpath: sonarr
     ports:
-      - ${SONARR_PORT}:8989
+      - ${SONARR_PORT:-8989}:8989
     restart: unless-stopped
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${NODE}
 
   tautulli: #plex monitor
     image: lscr.io/linuxserver/tautulli:latest
@@ -80,9 +124,19 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ${MNT_CONFIG}/tautulli/:/config
+      - type: volume
+        source: nfs-backups
+        target: /config/backups
+        volume:
+          nocopy: true
+          subpath: tautulli
     ports:
-      - ${TAUTULLI_PORT}:8181
+      - ${TAUTULLI_PORT:-8181}:8181
     restart: unless-stopped
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${NODE}
   
   #lidarr: #music. NOT IN USE
     #hostname: lidarr
@@ -160,46 +214,62 @@ services:
 ####################
   
   qbittorrent:
-    #hostname: qbittorrent
-    container_name: qbittorrent
+    hostname: qbittorrent
     image: lscr.io/linuxserver/qbittorrent:latest
     restart: unless-stopped
-    network_mode: "service:gluetun"
     environment:
       - PUID=${UID}
       - PGID=${GID}
       - WEBUI_PORT=${QBITTORRENT_PORT}
       - TZ=${TZ}
+    ports:
+      - ${QBITTORRENT_PORT}:${QBITTORRENT_PORT}
     volumes:
-      - ${MNT_EXT_CONFIG}/qbittorrent:/config
-      - ${MNT_MEDIA}/Downloads:/downloads
-    depends_on:
-      gluetun:
-        condition: service_healthy
+      - type: volume
+        source: nfs-ext-config
+        target: /config
+        volume:
+          nocopy: true
+          subpath: qbittorrent
+      - type: volume
+        source: nfs-media
+        target: /downloads
+        volume:
+          nocopy: true
+          subpath: Downloads
 
   sabnzbd:
-    #hostname: sabnzbd
-    container_name: sabnzbd
+    hostname: sabnzbd
     image: lscr.io/linuxserver/sabnzbd:latest
     restart: unless-stopped
-    network_mode: "service:gluetun"
     environment:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
+      - HTTP_PROXY=http://gluetun:8888
+      - HTTPS_PROXY=http://gluetun:8888
+    ports:
+      - ${SABNZBD_PORT:-8080}:8080
     volumes:
-      - ${MNT_EXT_CONFIG}/sabnzbd:/config
-      - ${MNT_MEDIA}/Downloads:/downloads
-    depends_on:
-      gluetun:
-        condition: service_healthy
+      - type: volume
+        source: nfs-ext-config
+        target: /config
+        volume:
+          nocopy: true
+          subpath: sabnzbd
+      - type: volume
+        source: nfs-media
+        target: /downloads
+        volume:
+          nocopy: true
+          subpath: Downloads
 
 #######
 # VPN #
 #######
   gluetun:
     image: qmcgaw/gluetun:latest
-    container_name: gluetun
+    hostname: gluetun
     # line above must be uncommented to allow external containers to connect.
     # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
     cap_add:
@@ -211,10 +281,13 @@ services:
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
-      - ${QBITTORRENT_PORT}:${QBITTORRENT_PORT}/tcp #qBittorrent
-      - ${SABNZBD_PORT}:8080/tcp #sabnzbd
     volumes:
-      - ${MNT_EXT_CONFIG}/gluetun:/gluetun
+      - type: volume
+        source: nfs-ext-config
+        target: /gluetun
+        volume:
+          nocopy: true
+          subpath: gluetun
     environment:
       # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
       - VPN_SERVICE_PROVIDER=nordvpn
@@ -235,15 +308,33 @@ services:
       - DNS_UNBLOCK_HOSTNAMES=${UNBLOCK_URLS}
       - DNS_UPSTREAM_RESOLVERS=${DNS_UPSTREAM_RESOLVERS:-quad9,cloudflare}
       - DNS_CACHING=off
-      - HEALTH_TARGET_ADDRESS=${GLUETUN_HEALTH_PING:-9.9.9.9}
+      - HEALTH_TARGET_ADDRESSES=${GLUETUN_HEALTH_PING:-9.9.9.9}
+      - HTTPPROXY=on
+      - HTTPPROXY_PORT=8888
+
+volumes:
+  nfs-media:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NAS_IP},rw,nolock,soft,nfsvers=4"
+      device: ":${MNT_MEDIA}"
+  nfs-backups:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NAS_IP},rw,nolock,soft,nfsvers=4"
+      device: ":${MNT_BACKUPS}"
+  nfs-ext-config:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NAS_IP},rw,nolock,soft,nfsvers=4"
+      device: ":${MNT_EXT_CONFIG}"
 
 networks:
   default:
+    driver: overlay
     name: arr_network
     internal: false
-    ipam:
-      config:
-        - subnet: 172.25.1.0/28
-          gateway: 172.25.1.1
-  auth_net:
-    external: true
+    attachable: true
