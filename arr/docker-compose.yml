@@ -18,28 +18,10 @@ services:
           subpath: bazarr
     ports:
       - ${BAZARR_PORT:-6767}:6767
-    restart: unless-stopped
     deploy:
       placement:
         constraints:
           - node.hostname == ${NODE}
-  
-  kometa:
-    container_name: kometa
-    image: kometateam/kometa:latest
-    environment:
-      - PUID=1037
-      - PGID=65536
-      - TZ=America/Denver
-      - KOMETA_RUN=${KOMETA_RUN} #run immediately
-      - KOMETA_TIMES=05:00|17:00
-    volumes:
-      - type: volume
-        source: nfs-ext-config
-        target: /config
-        volume:
-          nocopy: true
-          subpath: kometa
   
   prowlarr: #overview management
     hostname: prowlarr
@@ -59,7 +41,6 @@ services:
           subpath: prowlarr
     ports:
       - ${PROWLARR_PORT:-9696}:9696
-    restart: unless-stopped
     deploy:
       placement:
         constraints:
@@ -68,7 +49,6 @@ services:
   radarr: #movies
     hostname: radarr
     image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -84,7 +64,6 @@ services:
           subpath: radarr
     ports:
       - ${RADARR_PORT:-7878}:7878
-    restart: unless-stopped
     deploy:
       placement:
         constraints:
@@ -93,7 +72,6 @@ services:
   sonarr: #tv shows
     hostname: sonarr
     image: lscr.io/linuxserver/sonarr:latest
-    container_name: sonarr
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -109,15 +87,14 @@ services:
           subpath: sonarr
     ports:
       - ${SONARR_PORT:-8989}:8989
-    restart: unless-stopped
     deploy:
       placement:
         constraints:
           - node.hostname == ${NODE}
 
   tautulli: #plex monitor
+    hostname: tautulli
     image: lscr.io/linuxserver/tautulli:latest
-    container_name: tautulli
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -132,7 +109,6 @@ services:
           subpath: tautulli
     ports:
       - ${TAUTULLI_PORT:-8181}:8181
-    restart: unless-stopped
     deploy:
       placement:
         constraints:
@@ -168,18 +144,41 @@ services:
       #- ${READARR_PORT}:8787
     #restart: unless-stopped
 
-  #maintainerr: # NOT IN USE
-    #image: jorenn92/maintainerr:latest
-    #container_name: maintainerr
-    #user: ${UID}:${GID}
-    #volumes:
-      #- ${MNT_CONFIG}/maintainerr:/data
-    #environment:
-      #- TZ=${TZ}
-      #- DEBUG=true # uncomment to enable debug logs
-    #ports:
-      #- ${MAINTAINERR_PORT}:6246
-    #restart: unless-stopped
+###################
+# HELPER SERVICES #
+###################
+
+  kometa:
+    image: kometateam/kometa:latest
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - KOMETA_RUN=${KOMETA_RUN} #run immediately
+      - KOMETA_TIMES=05:00|17:00
+    volumes:
+      - type: volume
+        source: nfs-ext-config
+        target: /config
+        volume:
+          nocopy: true
+          subpath: kometa
+   
+  maintainerr:
+    hostname: maintainerr
+    image: maintainerr/maintainerr:latest
+    user: ${UID}:${GID}
+    volumes:
+      - type: volume
+        source: nfs-ext-config
+        target: /opt/data
+        volume:
+          nocopy: true
+          subpath: maintainerr
+    environment:
+      - TZ=${TZ}
+    ports:
+      - ${MAINTAINERR_PORT:-6246}:6246
 
   # tdarr: #conversions
     # hostname: tdarr
@@ -216,7 +215,6 @@ services:
   qbittorrent:
     hostname: qbittorrent
     image: lscr.io/linuxserver/qbittorrent:latest
-    restart: unless-stopped
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -241,7 +239,6 @@ services:
   sabnzbd:
     hostname: sabnzbd
     image: lscr.io/linuxserver/sabnzbd:latest
-    restart: unless-stopped
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -268,8 +265,8 @@ services:
 # VPN #
 #######
   gluetun:
-    image: qmcgaw/gluetun:latest
     hostname: gluetun
+    image: qmcgaw/gluetun:latest
     # line above must be uncommented to allow external containers to connect.
     # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
     cap_add:
