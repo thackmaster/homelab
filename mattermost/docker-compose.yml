@@ -1,6 +1,5 @@
 services:
   postgres:
-    container_name: mattermost-db
     hostname: mattermost-db
     image: postgres:16-alpine
     restart: unless-stopped
@@ -20,10 +19,9 @@ services:
       - POSTGRES_DB=${DB_NAME}
 
   mattermost:
-    container_name: mattermost
     depends_on:
       - postgres
-    image: mattermost/mattermost-team-edition:release-10.11
+    image: mattermost/mattermost-team-edition:release-11.7
     restart: unless-stopped
     networks:
       - default
