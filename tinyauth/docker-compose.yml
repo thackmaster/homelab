@@ -1,19 +1,19 @@
 services:
   tinyauth:
-    image: ghcr.io/steveiliop56/tinyauth:v4
-    container_name: tinyauth
+    image: ghcr.io/tinyauthapp/tinyauth:v5
+    hostname: tinyauth
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - APP_URL=${APP_URL}
-      - USERS=${USERS}
-      - LDAP_ADDRESS=ldap://lldap:3890
-      - LDAP_BIND_DN=${LDAP_DN}
-      - LDAP_BIND_PASSWORD=${LDAP_BIND_PASS}
-      - LDAP_BASE_DN=${LDAP_BASE_DN}
-      - LDAP_SEARCH_FILTER=(uid=%s)
-      - LDAP_INSECURE=true
+      - TINYAUTH_APPURL=${APP_URL}
+      - TINYAUTH_AUTH_USERS=${USERS}
+      - TINYAUTH_LDAP_ADDRESS=ldap://lldap:3890
+      - TINYAUTH_LDAP_BINDDN=${LDAP_DN}
+      - TINYAUTH_LDAP_BINDPASSWORD=${LDAP_BIND_PASS}
+      - TINYAUTH_LDAP_BASEDN=${LDAP_BASE_DN}
+      - TINYAUTH_LDAP_SEARCHFILTER=(uid=%s)
+      - TINYAUTH_LDAP_INSECURE=true
     networks:
       - default
       - auth_net
