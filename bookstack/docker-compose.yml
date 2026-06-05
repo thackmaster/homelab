@@ -15,7 +15,6 @@ services:
       - DB_USERNAME=${DB_USER}
       - DB_PASSWORD=${DB_PASS}
       - DB_DATABASE=${DB_DATABASE}
-      - APP_PROXIES="${PROXIES}"
       #- QUEUE_CONNECTION= #optional
     volumes:
       - ${MNT}:/config
