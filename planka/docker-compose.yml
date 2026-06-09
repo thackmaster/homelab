@@ -14,10 +14,7 @@ services:
     ports:
       - ${PORT}:1337
     volumes:
-      - ${MNT}/attachments:/app/private/attachments
-      - ${MNT}/background-images:/app/public/background-images
-      - ${MNT}/user-avatars:/app/public/user-avatars
-      - ${MNT}/favicons:/app/public/favicons
+      - ${MNT}:/app/data
     networks:
       - default
       - caddy
