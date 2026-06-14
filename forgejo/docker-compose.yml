@@ -1,0 +1,57 @@
+services:
+  server:
+    image: codeberg.org/forgejo/forgejo:15
+    environment:
+      - USER_UID=${UID}
+      - USER_GID=${GID}
+      - FORGEJO__database__DB_TYPE=postgres
+      - FORGEJO__database__HOST=db:5432
+      - FORGEJO__database__NAME=${DB_NAME}
+      - FORGEJO__database__USER={DB_USER}
+      - FORGEJO__database__PASSWD=${DB_PASS}
+    volumes:
+      - type: volume
+        source: nfs-config
+        target: /data
+        volume:
+          nocopy: true
+          subpath: forgejo
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '${PORT}:3000'
+      - '222:22'
+    networks:
+      - caddy
+      - default
+      - auth_net
+    deploy:
+      labels:
+        caddy: ${URL}
+        caddy.reverse_proxy: "{{ upstreams 3000 }}"
+
+  db:
+    hostname: db
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ${MNT_LOCAL}:/var/lib/postgresql
+
+volumes:
+  nfs-config:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NAS},rw,nolock,soft,nfsvers=4"
+      device: ":${MNT_NAS}"
+
+networks:
+  default:
+    name: forgejo
+    internal: true
+  caddy:
+    external: true
+  auth_net:
+    external: true
