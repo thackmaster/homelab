@@ -8,8 +8,9 @@ services:
       - HBOX_LOG_LEVEL=info
       - HBOX_MODE=production
       - HBOX_STORAGE_DATA=/data/
-      - PUID={UID}
-      - PGID={GID}
+      - PUID=${UID}
+      - PGID=${GID}
+      - HBOX_AUTH_API_KEY_PEPPER=${KEY}
     ports:
       - ${PORT}:7745
     volumes:
