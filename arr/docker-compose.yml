@@ -162,6 +162,34 @@ services:
       #- ${READARR_PORT}:8787
     #restart: unless-stopped
 
+################
+# REQUEST SITE #
+################
+  seerr: #requests
+    image: ghcr.io/seerr-team/seerr:latest
+    container_name: seerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+      #- PORT=5055 #optional
+    ports:
+      - ${SEERR_PORT}:5055
+    volumes:
+      - type: volume
+        source: nfs-ext-config
+        target: /app/config
+        volume:
+          nocopy: true
+          subpath: sonarr
+    restart: unless-stopped
+    networks:
+      - default
+      - caddy
+    deploy:
+      labels:
+        caddy: ${REQUEST_URL}
+        caddy.reverse_proxy: "{{ upstreams 5055 }}"
+
 ###################
 # HELPER SERVICES #
 ###################
@@ -366,3 +394,6 @@ networks:
     name: arr_network
     internal: false
     attachable: true
+  caddy:
+    name: caddy
+    external: true
