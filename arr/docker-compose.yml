@@ -62,12 +62,17 @@ services:
         volume:
           nocopy: true
           subpath: radarr
+    networks:
+      default:
+        aliases:
+          - radarr.local
     ports:
       - ${RADARR_PORT:-7878}:7878
     deploy:
       placement:
         constraints:
           - node.hostname == ${NODE}
+      endpoint_mode: vip
   
   sonarr: #tv shows
     hostname: sonarr
@@ -85,12 +90,17 @@ services:
         volume:
           nocopy: true
           subpath: sonarr
+    networks:
+      default:
+        aliases:
+          - sonarr.local
     ports:
       - ${SONARR_PORT:-8989}:8989
     deploy:
       placement:
         constraints:
           - node.hostname == ${NODE}
+      endpoint_mode: vip
 
   tautulli: #plex monitor
     hostname: tautulli
@@ -177,7 +187,6 @@ services:
           subpath: maintainerr
     environment:
       - TZ=${TZ}
-      - NODE_OPTIONS=--dns-result-order=ipv4first
     ports:
       - ${MAINTAINERR_PORT:-6246}:6246
 
