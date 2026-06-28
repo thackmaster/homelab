@@ -180,7 +180,7 @@ services:
         target: /app/config
         volume:
           nocopy: true
-          subpath: sonarr
+          subpath: seerr
     restart: unless-stopped
     networks:
       - default
