@@ -200,8 +200,10 @@ services:
           - maintainerr.local
     ports:
       - ${MAINTAINERR_PORT:-6246}:6246
-    dns_opt:
-      - use-vc
+    dns:
+      - 127.0.0.11
+      - 172.16.1.10
+      - 172.16.1.3
 
   # tdarr: #conversions
     # hostname: tdarr
