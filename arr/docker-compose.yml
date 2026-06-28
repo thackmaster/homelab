@@ -179,6 +179,9 @@ services:
       - TZ=${TZ}
     ports:
       - ${MAINTAINERR_PORT:-6246}:6246
+    dns_search: .
+    dns_opt:
+      - ndots:1
 
   # tdarr: #conversions
     # hostname: tdarr
@@ -274,7 +277,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - ${GLUETUN_PORT}:8000 # Control endpoint
+      - ${GLUETUN_PORT:-8000}:8000 # Control endpoint
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
