@@ -177,10 +177,9 @@ services:
           subpath: maintainerr
     environment:
       - TZ=${TZ}
+      - NODE_OPTIONS=--dns-result-order=ipv4first
     ports:
       - ${MAINTAINERR_PORT:-6246}:6246
-    dns_search:
-      - .
 
   # tdarr: #conversions
     # hostname: tdarr
