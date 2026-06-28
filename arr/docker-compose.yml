@@ -1,7 +1,6 @@
 services:
 
   bazarr: #subtitles
-    hostname: bazarr
     image: lscr.io/linuxserver/bazarr:latest
     environment:
       - PUID=${UID}
@@ -16,6 +15,10 @@ services:
         volume:
           nocopy: true
           subpath: bazarr
+    networks:
+      default:
+        aliases:
+          - bazarr.local
     ports:
       - ${BAZARR_PORT:-6767}:6767
     deploy:
@@ -24,7 +27,6 @@ services:
           - node.hostname == ${NODE}
   
   prowlarr: #overview management
-    hostname: prowlarr
     image: lscr.io/linuxserver/prowlarr:latest
     environment:
       - PUID=${UID}
@@ -39,6 +41,10 @@ services:
         volume:
           nocopy: true
           subpath: prowlarr
+    networks:
+      default:
+        aliases:
+          - prowlarr.local
     ports:
       - ${PROWLARR_PORT:-9696}:9696
     deploy:
@@ -47,7 +53,6 @@ services:
           - node.hostname == ${NODE}
   
   radarr: #movies
-    hostname: radarr
     image: lscr.io/linuxserver/radarr:latest
     environment:
       - PUID=${UID}
@@ -75,7 +80,6 @@ services:
       endpoint_mode: vip
   
   sonarr: #tv shows
-    hostname: sonarr
     image: lscr.io/linuxserver/sonarr:latest
     environment:
       - PUID=${UID}
@@ -103,7 +107,6 @@ services:
       endpoint_mode: vip
 
   tautulli: #plex monitor
-    hostname: tautulli
     image: lscr.io/linuxserver/tautulli:latest
     environment:
       - PUID=${UID}
@@ -117,12 +120,17 @@ services:
         volume:
           nocopy: true
           subpath: tautulli
+    networks:
+      default:
+        aliases:
+          - tautulli.local
     ports:
       - ${TAUTULLI_PORT:-8181}:8181
     deploy:
       placement:
         constraints:
           - node.hostname == ${NODE}
+      endpoint_mode: vip
   
   #lidarr: #music. NOT IN USE
     #hostname: lidarr
@@ -175,9 +183,10 @@ services:
           subpath: kometa
    
   maintainerr:
-    hostname: maintainerr
     image: maintainerr/maintainerr:latest
     user: ${UID}:${GID}
+    environment:
+      - TZ=${TZ}
     volumes:
       - type: volume
         source: nfs-ext-config
@@ -185,10 +194,14 @@ services:
         volume:
           nocopy: true
           subpath: maintainerr
-    environment:
-      - TZ=${TZ}
+    networks:
+      default:
+        aliases:
+          - maintainerr.local
     ports:
       - ${MAINTAINERR_PORT:-6246}:6246
+    dns_opt:
+      - use-vc
 
   # tdarr: #conversions
     # hostname: tdarr
@@ -223,13 +236,16 @@ services:
 ####################
   
   qbittorrent:
-    hostname: qbittorrent
     image: lscr.io/linuxserver/qbittorrent:latest
     environment:
       - PUID=${UID}
       - PGID=${GID}
       - WEBUI_PORT=${QBITTORRENT_PORT}
       - TZ=${TZ}
+    networks:
+      default:
+        aliases:
+          - qbittorrent.local
     ports:
       - ${QBITTORRENT_PORT}:${QBITTORRENT_PORT}
     volumes:
@@ -247,7 +263,6 @@ services:
           subpath: Downloads
 
   sabnzbd:
-    hostname: sabnzbd
     image: lscr.io/linuxserver/sabnzbd:latest
     environment:
       - PUID=${UID}
@@ -255,6 +270,10 @@ services:
       - TZ=${TZ}
       - HTTP_PROXY=http://gluetun:8888
       - HTTPS_PROXY=http://gluetun:8888
+    networks:
+      default:
+        aliases:
+          - sabnzbd.local
     ports:
       - ${SABNZBD_PORT:-8080}:8080
     volumes:
