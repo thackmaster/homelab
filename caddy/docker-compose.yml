@@ -6,7 +6,6 @@ services:
       - 443:443
     volumes:
       - ${MNT}:/data
-      - ${MNT}/logs:/var/log/caddy
     environment:
       - CADDY_DOCKER_MODE=server
       - CADDY_CONTROLLER_NETWORK=10.200.0.0/24
@@ -15,6 +14,8 @@ services:
       caddy.forward_auth: tinyauth:3000
       caddy.forward_auth.uri: /api/auth/caddy
       caddy.forward_auth.copy_headers: "Remote-User Remote-Name Remote-Email Remote-Groups"
+      caddy.log: ""
+      caddy.log.level: "INFO"
     networks:
       - auth_net
       - caddy
