@@ -20,11 +20,6 @@ services:
       - auth_net
       - caddy
       - caddy_controller
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 2
     deploy:
       mode: replicated
       replicas: 1
@@ -55,11 +50,6 @@ services:
       - CADDY_DOCKER_LOG_FORMAT=json
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 2
     deploy:
       mode: replicated
       replicas: 1
