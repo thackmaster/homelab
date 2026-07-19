@@ -6,6 +6,7 @@ services:
       - 443:443
     volumes:
       - ${MNT}:/data
+      - ${MNT}/logs:/var/log/caddy
     environment:
       - CADDY_DOCKER_MODE=server
       - CADDY_CONTROLLER_NETWORK=10.200.0.0/24
