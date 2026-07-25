@@ -2,7 +2,7 @@ services:
     broker:
         container_name: paperless-ngx_broker
         hostname: paperless-ngx_broker
-        image: docker.io/library/redis:8
+        image: docker.io/valkey/valkey:9-alpine
         restart: unless-stopped
         volumes:
             - ${MNT}/broker:/data
