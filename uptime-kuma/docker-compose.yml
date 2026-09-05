@@ -7,8 +7,18 @@ services:
     ports:
       - ${PORT}:3001
     volumes:
-      - uptime-kuma:/app/data
+    volumes:
+      type: volume
+        source: nfs-config
+        target: /app/data
+        volume:
+          nocopy: true
+          subpath: uptime-kuma
 
 volumes:
-  uptime-kuma:
-    external: false
+  nfs-config:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NAS},rw,nolock,soft,nfsvers=4"
+      device: ":${MNT_NAS}"
