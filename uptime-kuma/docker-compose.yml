@@ -5,7 +5,7 @@ services:
     ports:
       - ${PORT}:3001
     volumes:
-      type: volume
+      - type: volume
         source: nfs-config
         target: /app/data
         volume:
